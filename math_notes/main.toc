@@ -322,3 +322,4 @@
 \contentsline {subsection}{\numberline {78.1}PAC learning and sample complexity}{11}{subsection.78.1}%
 \contentsline {subsection}{\numberline {78.2}Regret bounds and online learning}{11}{subsection.78.2}%
 \contentsline {subsection}{\numberline {78.3}Policy gradient theorems}{11}{subsection.78.3}%
+\contentsline {part}{XIII\hspace {1em}Quantum Computing}{11}{part.13}%
