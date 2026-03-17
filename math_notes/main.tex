@@ -1,0 +1,266 @@
+% ================================================================
+% Consolidated Mathematics Notes — Main Document
+% ================================================================
+% Structure:
+%   main.tex                 <- you are here
+%   parts/
+%     p0_psle/               <- PSLE
+%     p1_emath/              <- O-Level E Math
+%     p2_amath/              <- O-Level A Math
+%     p3_h2math/             <- A-Level H2 Math
+%     p4_olympiad/           <- Math Olympiad
+%     p5_discrete/           <- CS1231S Discrete Structures
+%     p6_calculus/           <- MA1521 + MA2104
+%     p7_linalg/             <- MA2001 + MA2101
+%     p8_analysis/           <- MA2108
+%     p9_prob/               <- ST2334
+%     p10_stochastic/        <- MA3238 + MA4251
+%     p11_rl/                <- MA4275
+% ================================================================
+
+\documentclass[11pt,a4paper]{article}
+
+% --- Core packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage{parskip}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{pgfplots}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{mdframed}
+\usepackage{thmtools}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{positioning, arrows.meta, calc, patterns}
+\setlength{\headheight}{13.6pt}
+\addtolength{\topmargin}{-1.6pt}
+
+% --- Theorem environments ---
+\declaretheoremstyle[
+  headfont=\bfseries,
+  bodyfont=\normalfont,
+  headpunct={.},
+  postheadspace=0.5em
+]{thmstyle}
+
+\declaretheorem[style=thmstyle, name=Theorem,     numberwithin=section]{theorem}
+\declaretheorem[style=thmstyle, name=Lemma,       sibling=theorem]{lemma}
+\declaretheorem[style=thmstyle, name=Corollary,   sibling=theorem]{corollary}
+\declaretheorem[style=thmstyle, name=Proposition, sibling=theorem]{proposition}
+\declaretheorem[style=thmstyle, name=Definition,  sibling=theorem]{definition}
+\declaretheorem[style=thmstyle, name=Example,     sibling=theorem]{example}
+\declaretheorem[style=thmstyle, name=Remark,      sibling=theorem]{remark}
+
+% --- Coloured theorem boxes ---
+\definecolor{thmblue}{RGB}{220,232,248}
+\definecolor{defgreen}{RGB}{225,243,228}
+\definecolor{exorange}{RGB}{253,244,220}
+\surroundwithmdframed[backgroundcolor=thmblue,  linewidth=0pt, innertopmargin=4pt, innerbottommargin=4pt]{theorem}
+\surroundwithmdframed[backgroundcolor=defgreen, linewidth=0pt, innertopmargin=4pt, innerbottommargin=4pt]{definition}
+\surroundwithmdframed[backgroundcolor=exorange, linewidth=0pt, innertopmargin=4pt, innerbottommargin=4pt]{example}
+
+% --- Common math shorthands ---
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\nullity}{\operatorname{nullity}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\abs}[1]{\left\lvert #1 \right\rvert}
+\newcommand{\inner}[2]{\langle #1,\, #2 \rangle}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\dd}{\,\mathrm{d}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+
+% --- Page style ---
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\leftmark}
+\fancyhead[R]{Mathematics Notes}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% --- Section formatting ---
+\titleformat{\section}[block]{\Large\bfseries}{}{0em}{}
+\newcommand{\sectionbreak}{\newpage}
+\titleformat{\subsection}[block]{\large\bfseries}{}{0em}{}
+\titleformat{\subsubsection}[block]{\normalsize\bfseries}{}{0em}{}
+
+% --- Hyperlinks ---
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!60!black,
+  urlcolor=blue!60!black,
+  citecolor=blue!60!black,
+}
+
+% --- Title ---
+\title{\textbf{Consolidated Mathematics Notes}\\[0.5em]
+  \Large PSLE $\to$ O-Level $\to$ A-Level $\to$ Olympiad $\to$ University}
+\author{Jeriel Chan}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+% ================================================================
+%  PART 0 — Arithmetical Foundations (PSLE)
+% ================================================================
+\part{Arithmetical Foundations}
+\input{parts/p0_psle/ch01_numbers}
+\input{parts/p0_psle/ch02_fractions_decimals_pct}
+\input{parts/p0_psle/ch03_ratio_rate_proportion}
+\input{parts/p0_psle/ch04_geometry_mensuration}
+\input{parts/p0_psle/ch05_data_handling}
+
+% ================================================================
+%  PART I — O-Level Elementary Mathematics
+% ================================================================
+\part{O-Level Elementary Mathematics}
+\input{parts/p1_emath/ch06_algebra}
+\input{parts/p1_emath/ch07_functions_graphs}
+\input{parts/p1_emath/ch08_coordinate_geometry}
+\input{parts/p1_emath/ch09_trigonometry}
+\input{parts/p1_emath/ch10_statistics_probability}
+\input{parts/p1_emath/ch11_mensuration}
+
+% ================================================================
+%  PART II — O-Level Additional Mathematics
+% ================================================================
+\part{O-Level Additional Mathematics}
+\input{parts/p2_amath/ch12_polynomials}
+\input{parts/p2_amath/ch13_exp_log}
+\input{parts/p2_amath/ch14_trigonometry_adv}
+\input{parts/p2_amath/ch15_coordinate_geometry_adv}
+\input{parts/p2_amath/ch16_binomial_theorem}
+\input{parts/p2_amath/ch17_intro_calculus}
+\input{parts/p2_amath/ch18_sequences_series}
+
+% ================================================================
+%  PART III — A-Level H2 Mathematics
+% ================================================================
+\part{A-Level H2 Mathematics}
+\input{parts/p3_h2math/ch19_functions}
+\input{parts/p3_h2math/ch20_sequences_series_h2}
+\input{parts/p3_h2math/ch21_vectors}
+\input{parts/p3_h2math/ch22_complex_numbers}
+\input{parts/p3_h2math/ch23_calculus_h2}
+\input{parts/p3_h2math/ch24_permutations_combinations}
+\input{parts/p3_h2math/ch25_probability_h2}
+\input{parts/p3_h2math/ch26_hypothesis_testing}
+
+% ================================================================
+%  PART IV — Mathematical Olympiad Techniques
+% ================================================================
+\part{Mathematical Olympiad Techniques}
+\input{parts/p4_olympiad/ch27_number_theory}
+\input{parts/p4_olympiad/ch28_combinatorics}
+\input{parts/p4_olympiad/ch29_geometry}
+\input{parts/p4_olympiad/ch30_algebra_olymp}
+\input{parts/p4_olympiad/ch31_proof_strategies}
+
+% ================================================================
+%  PART V — Discrete Structures  (CS1231S)
+% ================================================================
+\part{Discrete Structures}
+\input{parts/p5_discrete/ch32_logic_proofs}
+\input{parts/p5_discrete/ch33_sets_functions}
+\input{parts/p5_discrete/ch34_relations}
+\input{parts/p5_discrete/ch35_combinatorics}
+\input{parts/p5_discrete/ch36_graph_theory}
+\input{parts/p5_discrete/ch37_number_theory_discrete}
+
+% ================================================================
+%  PART VI — Calculus  (MA1521 + MA2104)
+% ================================================================
+\part{Calculus}
+\input{parts/p6_calculus/ch38_limits_continuity}
+\input{parts/p6_calculus/ch39_differentiation_1var}
+\input{parts/p6_calculus/ch40_integration_1var}
+\input{parts/p6_calculus/ch41_sequences_series_ma1521}
+\input{parts/p6_calculus/ch42_vectors_curves_space}
+\input{parts/p6_calculus/ch43_partial_derivatives}
+\input{parts/p6_calculus/ch44_optimisation_multivar}
+\input{parts/p6_calculus/ch45_multiple_integrals}
+\input{parts/p6_calculus/ch46_vector_calculus}
+
+% ================================================================
+%  PART VII — Linear Algebra  (MA2001 + MA2101)
+% ================================================================
+\part{Linear Algebra}
+\input{parts/p7_linalg/ch47_vector_spaces}
+\input{parts/p7_linalg/ch48_linear_maps_matrices}
+\input{parts/p7_linalg/ch49_systems_gaussian_elim}
+\input{parts/p7_linalg/ch50_determinants}
+\input{parts/p7_linalg/ch51_eigenvalues_eigenvectors}
+\input{parts/p7_linalg/ch52_inner_product_spaces}
+\input{parts/p7_linalg/ch53_matrix_decompositions}
+
+% ================================================================
+%  PART VIII — Mathematical Analysis  (MA2108)
+% ================================================================
+\part{Mathematical Analysis}
+\input{parts/p8_analysis/ch54_real_number_system}
+\input{parts/p8_analysis/ch55_sequences}
+\input{parts/p8_analysis/ch56_limits_continuity_analysis}
+\input{parts/p8_analysis/ch57_differentiability}
+\input{parts/p8_analysis/ch58_riemann_integration}
+\input{parts/p8_analysis/ch59_series}
+
+% ================================================================
+%  PART IX — Probability and Statistics  (ST2334)
+% ================================================================
+\part{Probability and Statistics}
+\input{parts/p9_prob/ch60_probability_axioms}
+\input{parts/p9_prob/ch61_discrete_rv}
+\input{parts/p9_prob/ch62_continuous_rv}
+\input{parts/p9_prob/ch63_joint_distributions}
+\input{parts/p9_prob/ch64_limit_theorems}
+\input{parts/p9_prob/ch65_statistical_inference}
+
+% ================================================================
+%  PART X — Stochastic Processes  (MA3238 + MA4251)
+% ================================================================
+\part{Stochastic Processes}
+\input{parts/p10_stochastic/ch66_dtmc}
+\input{parts/p10_stochastic/ch67_poisson_processes}
+\input{parts/p10_stochastic/ch68_ctmc}
+\input{parts/p10_stochastic/ch69_renewal_theory}
+\input{parts/p10_stochastic/ch70_martingales}
+\input{parts/p10_stochastic/ch71_brownian_motion}
+\input{parts/p10_stochastic/ch72_stochastic_calculus}
+
+% ================================================================
+%  PART XI — Mathematics for Reinforcement Learning  (MA4275)
+% ================================================================
+\part{Mathematics for Reinforcement Learning}
+\input{parts/p11_rl/ch73_dynamic_programming}
+\input{parts/p11_rl/ch74_mdp}
+\input{parts/p11_rl/ch75_value_functions}
+\input{parts/p11_rl/ch76_optimisation_rl}
+\input{parts/p11_rl/ch77_function_approximation}
+\input{parts/p11_rl/ch78_theoretical_rl}
+
+\end{document}
