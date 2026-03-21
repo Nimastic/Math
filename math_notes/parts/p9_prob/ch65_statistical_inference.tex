@@ -15,3 +15,72 @@
 \subsection{Hypothesis testing: z, t, chi-squared, F tests}
 
 % TODO
+
+\subsection{Benford's Law and Fraud Detection}
+
+\begin{definition}
+\textbf{Benford's Law} (also called the \textit{First-Digit Law}) states that in many naturally occurring datasets, the probability that the leading (first significant) digit is $d \in \{1, 2, \ldots, 9\}$ follows a logarithmic distribution:
+\[
+P(D = d) = \log_{10}\!\left(1 + \frac{1}{d}\right)
+\]
+\end{definition}
+
+\begin{remark}
+The predicted probabilities are approximately:
+\begin{center}
+\begin{tabular}{c|ccccccccc}
+Digit $d$ & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 \\
+\hline
+$P(D=d)$ & 30.1\% & 17.6\% & 12.5\% & 9.7\% & 7.9\% & 6.7\% & 5.8\% & 5.1\% & 4.6\%
+\end{tabular}
+\end{center}
+Crucially, the digit \textbf{1} appears as the leading digit nearly a third of the time --- far more often than a naive uniform assumption ($11.\overline{1}\%$) would suggest.
+\end{remark}
+
+\subsubsection*{Logarithmic Interpretation}
+
+The law arises from the \emph{gaps} between consecutive base-10 logarithms of integers:
+\[
+P(D = d) = \log_{10}(d+1) - \log_{10}(d) = \log_{10}\!\left(\frac{d+1}{d}\right) = \log_{10}\!\left(1+\frac{1}{d}\right)
+\]
+These gaps are largest at $d=1$ and shrink monotonically toward $d=9$, explaining why lower digits dominate.
+
+\begin{theorem}[Condition for Benford's Law]
+Benford's Law holds for a dataset when the \textbf{fractional part} of $\log_{10}(x)$ --- i.e.\ $\{\log_{10}(x)\}$ --- is uniformly distributed on $[0,1)$. Under this condition, the probability of each leading digit is exactly the logarithmic gap above.
+\end{theorem}
+
+\subsubsection*{Why Naturally Occurring Data Follows This Pattern}
+
+Consider a quantity growing multiplicatively (e.g.\ compound interest at 10\% per year):
+\begin{itemize}
+    \item Going from \$1 to \$2 requires a $100\%$ increase (and takes many years).
+    \item Going from \$8 to \$9 requires only an $11\%$ increase (reached quickly).
+\end{itemize}
+Numbers therefore spend \emph{proportionally more time} with leading digit 1 than with 9, regardless of the unit of measurement.
+
+\begin{theorem}[Scale Invariance]
+Benford's Law is \textbf{scale invariant}: multiplying an entire dataset by any positive constant (e.g.\ converting currencies or units) does not change the leading-digit distribution. This is a hallmark property that distinguishes naturally generated data from fabricated data.
+\end{theorem}
+
+\subsubsection*{Limitations}
+
+Benford's Law \emph{fails} when:
+\begin{itemize}
+    \item The data spans a narrow range of magnitudes (e.g.\ adult human heights in metres, all clustered near $1$--$2$ m).
+    \item The dataset is artificially constrained (e.g.\ prices set to always begin with \$9.99).
+    \item Data are purely random (uniformly or normally distributed with no multiplicative structure).
+\end{itemize}
+
+\subsubsection*{Application: Fraud Detection}
+
+\begin{example}
+Given an unlabelled dataset of financial figures, one can test conformity to Benford's Law using a \textbf{chi-squared goodness-of-fit test}:
+\[
+\chi^2 = \sum_{d=1}^{9} \frac{(O_d - E_d)^2}{E_d}, \qquad E_d = N \cdot \log_{10}\!\left(1+\frac{1}{d}\right)
+\]
+where $O_d$ is the observed count of leading digit $d$ and $N$ is the total number of values. A statistically significant deviation (especially a distribution that is \emph{too uniform}) is a red flag for fabricated data, since humans inventing numbers tend to distribute digits more evenly than nature does.
+\end{example}
+
+\begin{remark}
+Benford's Law has been used to audit elections, detect accounting fraud, and expose billion-dollar financial scandals. It is context-free: no knowledge of what the numbers represent is required, only that the data plausibly spans several orders of magnitude. Non-conformity is not definitive proof of fraud, but it is a statistically grounded signal warranting further investigation.
+\end{remark}
