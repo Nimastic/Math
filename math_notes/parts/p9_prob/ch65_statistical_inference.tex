@@ -6,7 +6,74 @@
 
 \subsection{Point estimation: MLE, MOM}
 
-% TODO
+\subsubsection*{Estimators and Estimates}
+
+\begin{definition}
+An \textbf{estimator} is a function of sample data used to infer an unknown population parameter $\theta$. Because it depends on random sample data, an estimator $\hat{\theta}$ is itself a \textbf{random variable} with its own probability distribution. The specific numerical value produced from a given sample is called an \textbf{estimate}.
+\end{definition}
+
+\begin{example}
+The sample mean $\bar{X} = \frac{1}{n}\sum_{i=1}^n X_i$ is an \emph{estimator} of the population mean $\mu$. If a particular sample yields $\bar{x} = 172\,\text{cm}$, then $172\,\text{cm}$ is the \emph{estimate}.
+\end{example}
+
+\begin{remark}
+Point estimators provide a single value; interval estimators (confidence intervals) provide a range of plausible values. See the next subsection for confidence intervals.
+\end{remark}
+
+\subsubsection*{Properties of Good Estimators}
+
+\begin{definition}
+Let $\hat{\theta}$ be an estimator of parameter $\theta$, based on a sample of size $n$.
+\begin{itemize}
+    \item \textbf{Unbiasedness:} $\hat{\theta}$ is \emph{unbiased} if $\mathbb{E}[\hat{\theta}] = \theta$. The \emph{bias} is $\mathrm{Bias}(\hat{\theta}) = \mathbb{E}[\hat{\theta}] - \theta$.
+    \item \textbf{Consistency:} $\hat{\theta}$ is \emph{consistent} if $\hat{\theta} \xrightarrow{p} \theta$ as $n \to \infty$; i.e.\ the estimator converges in probability to the true value.
+    \item \textbf{Efficiency:} Among all unbiased estimators, $\hat{\theta}$ is \emph{efficient} if it achieves the minimum variance. The \textbf{Cramér--Rao lower bound} provides the theoretical minimum variance for any unbiased estimator.
+\end{itemize}
+\end{definition}
+
+\begin{example}
+The sample mean $\bar{X}$ is unbiased for $\mu$. The sample variance $S^2 = \frac{1}{n-1}\sum_{i=1}^n (X_i - \bar{X})^2$ is unbiased for $\sigma^2$ (the $n-1$ denominator corrects for the bias that arises using $n$).
+\end{example}
+
+\subsubsection*{Method of Moments (MOM)}
+
+\begin{definition}
+The \textbf{Method of Moments} (MOM) estimates parameters by equating \emph{population moments} to \emph{sample moments} and solving. The $k$-th population moment is $\mu_k' = \mathbb{E}[X^k]$; the corresponding sample moment is $m_k' = \frac{1}{n}\sum_{i=1}^n x_i^k$.
+\end{definition}
+
+\begin{example}
+For a distribution with mean $\mu$ and variance $\sigma^2$, MOM sets:
+\[
+\hat{\mu} = m_1' = \bar{x}, \qquad \hat{\sigma}^2 = m_2' - (m_1')^2 = \frac{1}{n}\sum x_i^2 - \bar{x}^2
+\]
+MOM estimators are simple to compute but may not always be the most efficient.
+\end{example}
+
+\subsubsection*{Maximum Likelihood Estimation (MLE)}
+
+\begin{definition}
+Given a sample $x_1, \ldots, x_n$ and a parametric model with parameter $\theta$, the \textbf{likelihood function} is:
+\[
+L(\theta) = \prod_{i=1}^n f(x_i \mid \theta)
+\]
+The \textbf{maximum likelihood estimator} (MLE) $\hat{\theta}_{\mathrm{MLE}}$ is the value of $\theta$ that maximises $L(\theta)$, or equivalently the \textbf{log-likelihood} $\ell(\theta) = \ln L(\theta)$ (since $\ln$ is monotone):
+\[
+\hat{\theta}_{\mathrm{MLE}} = \arg\max_{\theta}\; \ell(\theta)
+\]
+In practice, solve $\frac{\partial \ell}{\partial \theta} = 0$ (the \emph{score equation}).
+\end{definition}
+
+\begin{example}
+For $X_1,\ldots,X_n \overset{\text{iid}}{\sim} \mathcal{N}(\mu, \sigma^2)$, the log-likelihood is:
+\[
+\ell(\mu, \sigma^2) = -\frac{n}{2}\ln(2\pi\sigma^2) - \frac{1}{2\sigma^2}\sum_{i=1}^n (x_i - \mu)^2
+\]
+Setting $\partial\ell/\partial\mu = 0$ gives $\hat{\mu}_{\mathrm{MLE}} = \bar{x}$. Setting $\partial\ell/\partial\sigma^2 = 0$ gives $\hat{\sigma}^2_{\mathrm{MLE}} = \frac{1}{n}\sum(x_i-\bar{x})^2$ (note: biased, unlike MOM's sample variance).
+\end{example}
+
+\begin{remark}
+MLEs have strong asymptotic properties: they are consistent, asymptotically normal, and asymptotically efficient (achieving the Cramér--Rao bound as $n \to \infty$).
+\end{remark}
 
 \subsection{Confidence intervals}
 
@@ -14,7 +81,66 @@
 
 \subsection{Hypothesis testing: z, t, chi-squared, F tests}
 
-% TODO
+\subsubsection*{The Chi-Squared ($\chi^2$) Test}
+
+\begin{definition}
+The \textbf{chi-squared test statistic} measures how far observed categorical frequencies deviate from expected frequencies:
+\[
+\chi^2 = \sum_{i} \frac{(O_i - E_i)^2}{E_i}
+\]
+where $O_i$ is the \emph{observed} count and $E_i$ is the \emph{expected} count in category $i$. Under the null hypothesis, this statistic follows a $\chi^2$ distribution with an appropriate number of degrees of freedom.
+\end{definition}
+
+\begin{remark}
+A smaller $\chi^2$ value means observed data align closely with expectations (supporting $H_0$). A large $\chi^2$ value — falling in the critical region — provides evidence against $H_0$.
+\end{remark}
+
+\subsubsection*{Type I: Goodness-of-Fit Test}
+
+\begin{definition}
+A \textbf{goodness-of-fit test} asks: does a sample distribution match a hypothesised population distribution? With $k$ categories, the degrees of freedom are $\nu = k - 1$ (minus one additional for each estimated parameter).
+\end{definition}
+
+\begin{example}
+A die is rolled 60 times. Under $H_0$ (fair die), each face is expected $E_i = 10$ times. The observed counts are $\{8, 12, 9, 11, 7, 13\}$. Then:
+\[
+\chi^2 = \frac{(8-10)^2}{10} + \frac{(12-10)^2}{10} + \cdots + \frac{(13-10)^2}{10} = \frac{4+4+1+1+9+9}{10} = 2.8
+\]
+With $\nu = 5$ degrees of freedom, compare to the critical value $\chi^2_{0.05,5} = 11.07$. Since $2.8 < 11.07$, we fail to reject $H_0$.
+\end{example}
+
+\subsubsection*{Type II: Test of Independence}
+
+\begin{definition}
+A \textbf{test of independence} determines whether two categorical variables are associated. Data are arranged in an $r \times c$ contingency table. The expected count for cell $(i,j)$ is:
+\[
+E_{ij} = \frac{(\text{row } i \text{ total}) \times (\text{column } j \text{ total})}{\text{grand total}}
+\]
+Degrees of freedom: $\nu = (r-1)(c-1)$.
+\end{definition}
+
+\begin{example}
+To test whether gender and voting preference are independent, arrange counts into a $2 \times 3$ contingency table (2 genders, 3 parties). Compute $E_{ij}$ for each cell, then sum $\frac{(O_{ij}-E_{ij})^2}{E_{ij}}$ across all cells. With $\nu = (2-1)(3-1) = 2$, compare to $\chi^2_{0.05,2} = 5.99$.
+\end{example}
+
+\subsubsection*{Requirements and Limitations}
+
+\begin{remark}
+The $\chi^2$ test requires:
+\begin{itemize}
+    \item \textbf{Categorical data} — it does not apply to continuous measurements directly.
+    \item \textbf{Independent observations} — each subject appears in exactly one cell.
+    \item \textbf{Sufficient expected counts} — every cell should have $E_i \geq 5$. If this fails, merge categories or use Fisher's exact test.
+\end{itemize}
+The $\chi^2$ distribution is an approximation; it becomes accurate as sample size grows. For a $2 \times 2$ table with small samples, apply Yates' continuity correction:
+\[
+\chi^2 = \sum_{i} \frac{(|O_i - E_i| - 0.5)^2}{E_i}
+\]
+\end{remark}
+
+\begin{remark}
+For an application of the goodness-of-fit test to real-world fraud detection, see the Benford's Law subsection below, where the $\chi^2$ statistic is used to detect suspiciously uniform leading-digit distributions in financial data.
+\end{remark}
 
 \subsection{Benford's Law and Fraud Detection}
 

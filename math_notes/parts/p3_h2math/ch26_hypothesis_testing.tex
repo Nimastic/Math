@@ -14,4 +14,58 @@
 
 \subsection{Correlation and linear regression}
 
-% TODO
+\subsubsection*{Ordinary Least Squares (OLS) Regression}
+
+\begin{definition}
+In \textbf{multiple linear regression}, we model a response variable $y$ as a linear function of $p$ predictors:
+\[
+\mathbf{y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\varepsilon}, \qquad \boldsymbol{\varepsilon} \sim (0, \sigma^2 \mathbf{I})
+\]
+where $\mathbf{y} \in \mathbb{R}^n$, $\mathbf{X} \in \mathbb{R}^{n \times p}$ is the \emph{design matrix}, and $\boldsymbol{\beta} \in \mathbb{R}^p$ is the coefficient vector. The \textbf{Ordinary Least Squares} (OLS) estimator minimises the sum of squared residuals:
+\[
+\hat{\boldsymbol{\beta}}_{\mathrm{OLS}} = \arg\min_{\boldsymbol{\beta}} \|\mathbf{y} - \mathbf{X}\boldsymbol{\beta}\|^2 = (\mathbf{X}^\top \mathbf{X})^{-1}\mathbf{X}^\top \mathbf{y}
+\]
+\end{definition}
+
+\begin{remark}
+The closed-form solution $(\mathbf{X}^\top \mathbf{X})^{-1}$ exists \emph{only if} $\mathbf{X}^\top\mathbf{X}$ is invertible, which requires $\mathbf{X}$ to have full column rank. This is precisely the condition violated by perfect multicollinearity.
+\end{remark}
+
+\subsubsection*{The No Perfect Multicollinearity Assumption}
+
+\begin{definition}
+The \textbf{no perfect multicollinearity} assumption requires that no predictor variable is an exact linear combination of the others. Equivalently, the design matrix $\mathbf{X}$ must have full column rank: $\mathrm{rank}(\mathbf{X}) = p$.
+\end{definition}
+
+\begin{remark}
+If perfect multicollinearity holds (e.g.\ $X_3 = 2X_1 + X_2$ exactly), then $\mathbf{X}^\top\mathbf{X}$ is singular and its inverse does not exist. OLS estimation breaks down completely --- there are infinitely many coefficient vectors that fit the data equally well, so no unique solution can be identified.
+\end{remark}
+
+\begin{example}
+Suppose a model predicts income using both $X_1 = \text{age in months}$ and $X_2 = \text{age in years}$. Since $X_1 = 12 X_2$ exactly, the design matrix is rank-deficient. The model cannot separately estimate the effect of one month versus one year --- they always move together. \textbf{Fix:} drop one of the two variables.
+\end{example}
+
+\subsubsection*{Common Causes}
+
+\begin{remark}
+The three most frequent sources of perfect multicollinearity are:
+\begin{itemize}
+    \item \textbf{Dummy variable trap:} Including all $k$ categories of a categorical variable as dummy variables alongside an intercept. Since the dummies sum to 1 (the intercept column), perfect collinearity is introduced. \textbf{Fix:} drop one reference category.
+    \item \textbf{Duplicate variables:} Including the same measurement twice in different units (e.g.\ area in $\text{m}^2$ and area in $\text{cm}^2$).
+    \item \textbf{Constant predictors:} A predictor with zero variance (same value for all observations) is perfectly collinear with the intercept.
+\end{itemize}
+\end{remark}
+
+\subsubsection*{Perfect vs.\ Imperfect Multicollinearity}
+
+\begin{definition}
+\textbf{Imperfect (near) multicollinearity} occurs when predictors are highly correlated but not in an exact linear relationship. OLS still produces a unique solution, but coefficient estimates become highly sensitive to small changes in the data and standard errors inflate, making inference unreliable.
+\end{definition}
+
+\begin{remark}
+The \textbf{Variance Inflation Factor} (VIF) measures the severity of imperfect multicollinearity for predictor $j$:
+\[
+\mathrm{VIF}_j = \frac{1}{1 - R_j^2}
+\]
+where $R_j^2$ is the $R^2$ from regressing $X_j$ on all other predictors. A rule of thumb: $\mathrm{VIF}_j > 10$ signals problematic multicollinearity.
+\end{remark}
