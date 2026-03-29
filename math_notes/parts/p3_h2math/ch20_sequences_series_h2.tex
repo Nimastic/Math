@@ -6,7 +6,214 @@
 
 \subsection{Method of differences}
 
-% TODO
+\begin{definition}
+The \textbf{method of differences} derives closed-form summation formulae by writing each term $f(k)$ as a telescoping difference $g(k+1) - g(k)$, so that the sum collapses:
+\[
+\sum_{k=1}^n f(k) = \sum_{k=1}^n \bigl[g(k+1) - g(k)\bigr] = g(n+1) - g(1).
+\]
+\end{definition}
+
+\subsubsection*{Standard Summation Formulae}
+
+\begin{theorem}[Power sum formulae]
+\[
+\sum_{k=1}^n k = \frac{n(n+1)}{2}, \qquad
+\sum_{k=1}^n k^2 = \frac{n(n+1)(2n+1)}{6}, \qquad
+\sum_{k=1}^n k^3 = \left(\frac{n(n+1)}{2}\right)^2.
+\]
+\end{theorem}
+
+\begin{example}
+$1^2 + 2^2 + 3^2 + 4^2 + 5^2 = \dfrac{5 \cdot 6 \cdot 11}{6} = 55$. Check: $1+4+9+16+25=55$. \checkmark
+\end{example}
+
+\subsubsection*{Derivation of $\sum k^2$ via Telescoping}
+
+\textbf{Key identity.} Start from the binomial expansion of $(k+1)^3$:
+\[
+(k+1)^3 - k^3 = 3k^2 + 3k + 1.
+\]
+
+\textbf{Step 1 — Telescope the left side.} Sum from $k = 1$ to $n$:
+\[
+\sum_{k=1}^n \bigl[(k+1)^3 - k^3\bigr] = (n+1)^3 - 1^3 = n^3 + 3n^2 + 3n.
+\]
+(All intermediate terms cancel.)
+
+\textbf{Step 2 — Expand the right side.}
+\[
+\sum_{k=1}^n (3k^2 + 3k + 1) = 3\sum_{k=1}^n k^2 + 3\cdot\frac{n(n+1)}{2} + n.
+\]
+
+\textbf{Step 3 — Equate and solve for $S = \sum k^2$.}
+\[
+n^3 + 3n^2 + 3n = 3S + \frac{3n(n+1)}{2} + n.
+\]
+\[
+3S = n^3 + 3n^2 + 3n - \frac{3n(n+1)}{2} - n = n^3 + 3n^2 + 2n - \frac{3n^2 + 3n}{2}.
+\]
+Putting over a common denominator of 2:
+\[
+3S = \frac{2n^3 + 6n^2 + 4n - 3n^2 - 3n}{2} = \frac{2n^3 + 3n^2 + n}{2} = \frac{n(2n^2+3n+1)}{2} = \frac{n(n+1)(2n+1)}{2}.
+\]
+Dividing by 3:
+\[
+\boxed{\sum_{k=1}^n k^2 = \frac{n(n+1)(2n+1)}{6}.}
+\]
+
+\subsubsection*{General Pattern}
+
+\begin{remark}[How to derive $\sum k^m$ in general]
+To find a closed form for $\sum_{k=1}^n k^m$, telescope the identity
+\[
+(k+1)^{m+1} - k^{m+1} = (m+1)k^m + \binom{m+1}{2}k^{m-1} + \cdots + 1.
+\]
+The left side telescopes to $(n+1)^{m+1} - 1$. The right side expresses $\sum k^m$ in terms of the already-known lower power sums $\sum k^{m-1}, \ldots, \sum 1$, letting you solve for $\sum k^m$ inductively.
+
+Concretely:
+\begin{itemize}
+    \item To derive $\sum k$: use $(k+1)^2 - k^2 = 2k + 1$.
+    \item To derive $\sum k^2$: use $(k+1)^3 - k^3 = 3k^2 + 3k + 1$.
+    \item To derive $\sum k^3$: use $(k+1)^4 - k^4 = 4k^3 + 6k^2 + 4k + 1$.
+\end{itemize}
+\end{remark}
+
+\begin{remark}[Alternative: polynomial ansatz]
+One can also guess that $\sum_{k=1}^n k^2 = an^3 + bn^2 + cn + d$ (a polynomial one degree higher than $k^2$), substitute small values of $n$ to produce four equations, and solve for $a, b, c, d$. This avoids telescoping but requires more algebraic bookkeeping.
+\end{remark}
+
+\subsubsection*{Sum of Odd Squares}
+
+\begin{theorem}[Sum of odd squares]
+\[
+\sum_{k=1}^{m}(2k-1)^{2} = \frac{m(2m-1)(2m+1)}{3}.
+\]
+\end{theorem}
+
+\begin{proof}
+Expand the summand:
+\[
+(2k-1)^2 = 4k^2 - 4k + 1.
+\]
+Sum from $k=1$ to $m$ and apply the standard power-sum formulae:
+\[
+\sum_{k=1}^{m}(2k-1)^{2}
+= 4\sum_{k=1}^{m}k^{2} - 4\sum_{k=1}^{m}k + \sum_{k=1}^{m}1
+= 4\cdot\frac{m(m+1)(2m+1)}{6} - 4\cdot\frac{m(m+1)}{2} + m.
+\]
+Simplify each term:
+\[
+= \frac{2m(m+1)(2m+1)}{3} - 2m(m+1) + m.
+\]
+Factor out $m$ and put over a common denominator of 3:
+\[
+= \frac{2m(m+1)(2m+1) - 6m(m+1) + 3m}{3}
+= \frac{m\bigl[2(m+1)(2m+1) - 6(m+1) + 3\bigr]}{3}.
+\]
+Expand the bracket:
+\[
+2(m+1)(2m+1) - 6(m+1) + 3 = (2m+2)(2m+1) - 6m - 6 + 3
+= 4m^2 + 6m + 2 - 6m - 3 = 4m^2 - 1 = (2m-1)(2m+1).
+\]
+Hence
+\[
+\sum_{k=1}^{m}(2k-1)^{2} = \frac{m(2m-1)(2m+1)}{3}. \qedhere
+\]
+\end{proof}
+
+\begin{example}
+The odd squares $1^2 + 3^2 + 5^2 + 7^2$ correspond to $m=4$:
+\[
+\frac{4 \cdot 7 \cdot 9}{3} = \frac{252}{3} = 84.
+\]
+Check: $1 + 9 + 25 + 49 = 84$. \checkmark
+\end{example}
+
+\subsection{Linear recurrences and Binet's formula}
+
+\begin{definition}[Fibonacci sequence]
+The \textbf{Fibonacci sequence} is defined by the recurrence
+\[
+F_n = F_{n-1} + F_{n-2}, \qquad F_1 = F_2 = 1.
+\]
+The first few terms are $1, 1, 2, 3, 5, 8, 13, 21, 34, 55, \ldots$
+\end{definition}
+
+\subsubsection*{Closed Form via Characteristic Equation}
+
+A linear recurrence of the form $F_n = aF_{n-1} + bF_{n-2}$ can be solved in closed form by trying the \emph{ansatz} $F_n = r^n$.
+
+\textbf{Step 1 — Characteristic equation.} Substituting $F_n = r^n$ into $F_n = F_{n-1} + F_{n-2}$:
+\[
+r^n = r^{n-1} + r^{n-2} \implies r^2 = r + 1 \implies r^2 - r - 1 = 0.
+\]
+
+\textbf{Step 2 — Roots.} By the quadratic formula:
+\[
+r = \frac{1 \pm \sqrt{5}}{2}.
+\]
+Define the \textbf{golden ratio} $\varphi = \dfrac{1+\sqrt{5}}{2} \approx 1.618$ and its conjugate $\psi = \dfrac{1-\sqrt{5}}{2} \approx -0.618$.
+
+\textbf{Step 3 — General solution.} Since the two roots are distinct, the general solution is a linear combination:
+\[
+F_n = A\varphi^n + B\psi^n.
+\]
+
+\textbf{Step 4 — Apply initial conditions.} Using $F_1 = 1$ and $F_2 = 1$:
+\[
+A\varphi + B\psi = 1, \qquad A\varphi^2 + B\psi^2 = 1.
+\]
+Solving this system (using $\varphi^2 = \varphi+1$ and $\psi^2 = \psi+1$) gives $A = \dfrac{1}{\sqrt{5}}$ and $B = -\dfrac{1}{\sqrt{5}}$.
+
+\begin{theorem}[Binet's formula]
+\[
+\boxed{F_n = \frac{\varphi^n - \psi^n}{\sqrt{5}}}, \qquad \varphi = \frac{1+\sqrt{5}}{2},\quad \psi = \frac{1-\sqrt{5}}{2}.
+\]
+\end{theorem}
+
+\begin{remark}[Why $\psi^n$ vanishes]
+Since $|\psi| = \dfrac{\sqrt{5}-1}{2} \approx 0.618 < 1$, the term $\psi^n \to 0$ as $n\to\infty$. For large $n$, $F_n \approx \varphi^n/\sqrt{5}$, so the Fibonacci sequence grows \emph{exponentially} at rate $\varphi$.
+\end{remark}
+
+\subsubsection*{The Golden Ratio as a Limit}
+
+\begin{theorem}[Consecutive ratio limit]
+\[
+\lim_{n\to\infty}\frac{F_{n+1}}{F_n} = \varphi = \frac{1+\sqrt{5}}{2}.
+\]
+\end{theorem}
+
+\begin{proof}
+Divide Binet's formula for $F_{n+1}$ by that for $F_n$:
+\[
+\frac{F_{n+1}}{F_n} = \frac{\varphi^{n+1} - \psi^{n+1}}{\varphi^n - \psi^n} = \varphi\cdot\frac{1 - (\psi/\varphi)^{n+1}}{1 - (\psi/\varphi)^n}.
+\]
+Since $|\psi/\varphi| < 1$, both $(\psi/\varphi)^n \to 0$ and $(\psi/\varphi)^{n+1} \to 0$, giving the limit $\varphi$.
+\end{proof}
+
+\subsubsection*{Application: Finding the First 1000-Digit Fibonacci Number}
+
+\begin{example}[First Fibonacci number with 1000 digits]
+An integer $x > 0$ has exactly $d$ digits iff $10^{d-1} \le x < 10^d$, i.e.\ $d = \lfloor\log_{10} x\rfloor + 1$. We want the smallest $n$ with $F_n \ge 10^{999}$.
+
+Using the approximation $F_n \approx \varphi^n/\sqrt{5}$ for large $n$:
+\[
+\frac{\varphi^n}{\sqrt{5}} \ge 10^{999}
+\implies \varphi^n \ge \sqrt{5}\cdot 10^{999}
+\implies n\log_{10}\varphi \ge 999 + \tfrac{1}{2}\log_{10}5.
+\]
+Compute:
+\[
+\log_{10}\varphi = \log_{10}\!\frac{1+\sqrt{5}}{2} \approx 0.20898, \qquad \tfrac{1}{2}\log_{10}5 \approx 0.34949.
+\]
+So
+\[
+n \ge \frac{999 + 0.34949}{0.20898} \approx \frac{999.34949}{0.20898} \approx 4781.86.
+\]
+Rounding up: $n = 4782$.
+
+\textbf{Answer:} The first Fibonacci number with 1000 or more digits is $F_{4782}$.
+\end{example}
 
 \subsection{Convergence, limit of sum}
 

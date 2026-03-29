@@ -1,0 +1,69 @@
+% ==============================================================
+% Hilbert Spaces and Qubits
+% ==============================================================
+
+\section{Hilbert Spaces and Qubits}
+
+\subsection{Qubits and Dirac notation}
+
+% TODO
+
+\subsection{Tensor products and multi-qubit systems}
+
+\begin{definition}
+The \textbf{tensor product} (written $\otimes$) combines two quantum systems into a joint system. If qubit 1 is in state $|a\rangle$ and qubit 2 is in state $|b\rangle$, their combined state is:
+\[
+|a\rangle \otimes |b\rangle
+\]
+This is usually abbreviated by juxtaposition: $|a\rangle|b\rangle = |ab\rangle$.
+\end{definition}
+
+\begin{example}[Two-qubit states]
+Using the standard basis vectors $|0\rangle = \begin{bmatrix}1\\0\end{bmatrix}$ and $|1\rangle = \begin{bmatrix}0\\1\end{bmatrix}$, the tensor product is computed as the Kronecker product — multiply the scalar entries of the first vector by the entire second vector:
+\[
+|0\rangle \otimes |1\rangle = \begin{bmatrix}1\\0\end{bmatrix} \otimes \begin{bmatrix}0\\1\end{bmatrix} = \begin{bmatrix}1\cdot\begin{bmatrix}0\\1\end{bmatrix}\\[4pt] 0\cdot\begin{bmatrix}0\\1\end{bmatrix}\end{bmatrix} = \begin{bmatrix}0\\1\\0\\0\end{bmatrix}
+\]
+This 4-dimensional vector is the 2-qubit basis state $|01\rangle$. Similarly, $|1\rangle \otimes |0\rangle = |10\rangle = \begin{bmatrix}0\\0\\1\\0\end{bmatrix}$.
+
+An $n$-qubit system lives in a $2^n$-dimensional Hilbert space — the state space grows exponentially with the number of qubits.
+\end{example}
+
+\begin{remark}[Tensor product for gates]
+The $\otimes$ notation also applies to quantum gates. Writing $H^{\otimes 2} = H \otimes H$ means ``apply the Hadamard gate independently to each of two qubits''. More generally, $U^{\otimes n}$ applies gate $U$ in parallel to all $n$ qubits.
+\end{remark}
+
+\subsection{Inner products and measurement}
+
+% TODO
+
+\subsection{Circled operator notation}
+
+\begin{remark}[Reference: circled operators]
+Several ``circled'' binary operators appear in mathematics and quantum computing. Their meaning is context-dependent:
+
+\begin{center}
+\begin{tabular}{c|l|l}
+Symbol & Name & Common meaning \\
+\hline
+$\oplus$ & Circled plus & XOR / addition mod 2 / direct sum \\
+$\otimes$ & Circled times & Tensor product / Kronecker product \\
+$\ominus$ & Circled minus & Formal difference / subtraction-like operation \\
+$\oslash$ & Circled slash & Quotient-like / author-defined division operation \\
+$\odot$ & Circled dot & Elementwise (Hadamard) product / composition \\
+$\circ$ & Small circle & Function composition: $(f \circ g)(x) = f(g(x))$ \\
+$\bigoplus$ & Big circled plus & Direct sum over many terms: $\bigoplus_{i=1}^n V_i$ \\
+$\bigotimes$ & Big circled times & Tensor product over many terms: $\bigotimes_{i=1}^n |q_i\rangle$ \\
+\end{tabular}
+\end{center}
+
+\textbf{Quick intuition:}
+\begin{itemize}
+    \item $\oplus$ — special addition (bit-flipping arithmetic)
+    \item $\otimes$ — gluing systems together (combining spaces)
+    \item $\ominus$ — special subtraction
+    \item $\oslash$ — special division
+    \item $\odot$ — special elementwise multiplication
+    \item $\circ$ — function composition (not a circled symbol, but related in appearance)
+\end{itemize}
+Unlike the standard $+, -, \times$, circled symbols are \emph{not universal} — always check the author's definition when encountering them in a new context.
+\end{remark}

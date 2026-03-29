@@ -6,7 +6,46 @@
 
 \subsection{Principle of inclusion-exclusion}
 
-% TODO
+\begin{theorem}[Inclusion-Exclusion Principle]
+For finite sets $A_1, A_2, \ldots, A_n$:
+\[
+\left|A_1 \cup A_2 \cup \cdots \cup A_n\right|
+= \sum_i |A_i| - \sum_{i<j}|A_i \cap A_j| + \sum_{i<j<k}|A_i \cap A_j \cap A_k| - \cdots
+\]
+For two sets this simplifies to $|A \cup B| = |A| + |B| - |A \cap B|$.
+\end{theorem}
+
+\subsubsection*{Summing Multiples with Inclusion-Exclusion}
+
+A standard application is summing all multiples of $a$ or $b$ up to some limit.
+
+\begin{example}[Sum of multiples of 3 or 5 below 1000]
+Find the sum of all natural numbers below 1000 that are multiples of 3 or 5.
+
+\textbf{Multiples of 3 below 1000}: these are $3, 6, 9, \ldots, 999$. There are $\lfloor 999/3 \rfloor = 333$ terms, so their sum is
+\[
+3(1+2+\cdots+333) = 3 \cdot \frac{333 \cdot 334}{2} = 166833.
+\]
+
+\textbf{Multiples of 5 below 1000}: $5, 10, \ldots, 995$. There are $\lfloor 999/5 \rfloor = 199$ terms, so their sum is
+\[
+5(1+2+\cdots+199) = 5 \cdot \frac{199 \cdot 200}{2} = 99500.
+\]
+
+\textbf{Multiples of both} (i.e.\ multiples of $\text{lcm}(3,5)=15$): $15, 30, \ldots, 990$. There are $\lfloor 999/15 \rfloor = 66$ terms, so their sum is
+\[
+15(1+2+\cdots+66) = 15 \cdot \frac{66 \cdot 67}{2} = 33165.
+\]
+
+By inclusion-exclusion:
+\[
+166833 + 99500 - 33165 = \mathbf{233168}.
+\]
+\end{example}
+
+\begin{remark}[General template]
+To sum all multiples of $d$ below $N$: let $k = \lfloor (N-1)/d \rfloor$. The sum is $d \cdot k(k+1)/2$. For multiples of $a$ or $b$ below $N$, subtract the multiples of $\text{lcm}(a,b)$.
+\end{remark}
 
 \subsection{Generating functions}
 

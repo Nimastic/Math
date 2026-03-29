@@ -12,6 +12,43 @@
 
 % TODO
 
+\subsubsection*{Conditional Geometric Distribution}
+
+A useful technique is computing the conditional distribution of a geometric-like stopping time given that one event occurs before another.
+
+\begin{example}[First 6 before first 5]
+Roll a fair 6-sided die repeatedly. Let $A$ = ``the first 6 appears before the first 5''. Find $E[N \mid A]$, where $N$ is the total number of rolls.
+
+\textbf{Step 1 — Joint distribution.} On each roll independently, the outcome is: 6 with probability $1/6$, 5 with probability $1/6$, or ``other'' (1,2,3,4) with probability $4/6 = 2/3$. Event $A$ requires $N-1$ ``other'' rolls followed by a 6, so
+\[
+P(N = n \text{ and } A) = \left(\frac{4}{6}\right)^{n-1} \cdot \frac{1}{6}.
+\]
+
+\textbf{Step 2 — Find $P(A)$.}
+\[
+P(A) = \sum_{n=1}^{\infty} \left(\frac{4}{6}\right)^{n-1} \frac{1}{6}
+= \frac{1/6}{1 - 4/6} = \frac{1/6}{2/6} = \frac{1}{2}.
+\]
+
+\textbf{Step 3 — Conditional PMF.}
+\[
+P(N = n \mid A) = \frac{P(N=n \text{ and } A)}{P(A)}
+= \frac{(4/6)^{n-1}(1/6)}{1/2} = \left(\frac{2}{3}\right)^{n-1} \cdot \frac{1}{3}.
+\]
+This is a $\mathrm{Geometric}(1/3)$ distribution: each ``trial'' under the conditioning succeeds (6 appears) with probability $1/3$ and fails (other, not 5) with probability $2/3$.
+
+\textbf{Step 4 — Conditional expectation.}
+\[
+E[N \mid A] = \frac{1}{1/3} = 3.
+\]
+
+\textbf{Intuition.} Conditioning on $A$ is equivalent to pretending the die has only two outcomes: roll a 6 (probability $1/3$ among $\{1,2,3,4,6\}$) or roll something else (probability $2/3$). The mean waiting time to the 6 in this reduced experiment is 3.
+\end{example}
+
+\begin{remark}[General pattern]
+Suppose events $A$ (probability $p$) and $B$ (probability $q$) are mutually exclusive on each trial, with ``neither'' having probability $1-p-q$. Then $P(\text{A before B}) = p/(p+q)$, and given A occurs first, $N \mid (\text{A before B}) \sim \mathrm{Geometric}(p/(p+q))$ with mean $(p+q)/p$.
+\end{remark}
+
 \subsection{Generating functions (PGF, MGF)}
 
 % TODO

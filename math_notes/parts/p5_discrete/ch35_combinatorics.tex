@@ -15,3 +15,65 @@
 \subsection{Recurrence relations and closed forms}
 
 % TODO
+
+\subsection{Digit DP}
+
+\textbf{Digit DP} is a technique for counting integers in a range $[1, N]$ that satisfy some property that can be decomposed digit by digit. The key idea is to maintain a DP state that tracks:
+\begin{itemize}
+    \item how many digits are left to place,
+    \item any running modular conditions (e.g.\ divisibility by $k$),
+    \item any parity or membership constraints on digit counts,
+    \item whether the prefix built so far is still ``tight'' (equal to $N$'s prefix).
+\end{itemize}
+
+\subsubsection*{Lexicographic Unranking}
+
+A companion technique to digit DP is \textbf{unranking}: given a count function, find the $n$th element in lexicographic order.
+
+\begin{enumerate}
+    \item For each prefix length $\ell$, count valid completions using the DP.
+    \item Find the length $\ell^*$ such that the cumulative count first reaches or exceeds $n$.
+    \item Build the number digit by digit: for each position, try each digit $d$ in order, count completions with that digit placed, subtract from $n$ until the correct branch is identified.
+\end{enumerate}
+
+\begin{example}[Very odd numbers]
+Call a positive integer \emph{very odd} if it uses only odd digits $\{1,3,5,7,9\}$, is divisible by $105 = 3 \times 5 \times 7$, and each odd digit appears an odd number of times. Let $\Theta(n)$ be the $n$th such number.
+
+\textbf{Key observations:}
+\begin{itemize}
+    \item Divisibility by 5 with only odd digits forces the last digit to be 5. Write the number as a prefix $P$ followed by 5.
+    \item Divisibility by 7: $(10P + 5) \equiv 0 \pmod 7 \Rightarrow P \equiv 3 \pmod 7$.
+    \item Divisibility by 3: total digit sum $\equiv 0 \pmod 3$. Since the appended 5 contributes 5, we need $\text{digitSum}(P) \equiv 1 \pmod 3$.
+    \item Parity of digit counts: in the final number all five digits $\{1,3,5,7,9\}$ must appear an odd number of times. Appending a 5 flips the parity of 5, so in $P$: digits $1,3,7,9$ must appear an \emph{odd} number of times and digit 5 an \emph{even} number of times.
+\end{itemize}
+
+\textbf{DP state}: $(\text{rem},\; \text{mod}_7,\; \text{mod}_3,\; \text{parityMask})$ where $\text{parityMask}$ is a 5-bit integer tracking the parities of the five odd-digit counts. At $\text{rem}=0$ a state is valid iff $\text{mod}_7 = 3$, $\text{mod}_3 = 1$, and $\text{parityMask} = \texttt{11011}_2$ (bits for $1,3,7,9$ set; bit for 5 clear).
+
+Results: $\Theta(1) = 1117935$, $\Theta(10^3) = 11137955115$, $\Theta(10^{16}) = 13313751171933973557517973175$.
+\end{example}
+
+\subsection{Binary Trie DP (Expected-Value Guessing)}
+
+A \textbf{binary trie} stores a set of integers by inserting their binary representations as root-to-leaf paths. Reading bits from the \emph{least significant bit} (LSB) first gives a natural trie over the bit-decomposition of each number.
+
+\subsubsection*{Optimal Guessing DP}
+
+\begin{example}[Expected score when guessing a prime bit by bit]
+A prime $p \le N$ is drawn uniformly at random. Its binary representation is revealed one bit at a time starting from the LSB; before each bit is shown the guesser chooses 0 or 1 to maximise expected correct guesses.
+
+\textbf{Approach}: insert all primes $\le N$ into a binary trie (LSB-first). At each trie node $u$, let $c_0(u)$ and $c_1(u)$ be the number of candidates with next bit 0 or 1, and $t(u) = c_0 + c_1$. The optimal expected score from node $u$ is:
+\[
+V(u) = \frac{\max(c_0(u),\, c_1(u))}{t(u)}
++ \frac{t(\text{child}_0)}{t(u)}\,V(\text{child}_0)
++ \frac{t(\text{child}_1)}{t(u)}\,V(\text{child}_1).
+\]
+The first term is the probability of guessing the current bit correctly (always guess the majority). The remaining terms are the expected future score weighted by which branch is actually taken.
+
+Compute $V$ bottom-up (leaves first). The answer is $V(\text{root})$.
+
+\textbf{Sanity checks}: $E(10) = 2$, $E(30) = 2.9$, $E(10^8) = 14.97696693$.
+\end{example}
+
+\begin{remark}[Why majority guessing is optimal]
+At any node the guesser sees only the count distribution, not which prime was drawn. Guessing the majority bit maximises the probability of a correct guess at that step. This greedy-per-step strategy is globally optimal because guessing correctly does not affect the subsequent state (the true bit is always revealed afterwards).
+\end{remark}

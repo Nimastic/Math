@@ -6,12 +6,431 @@
 
 \subsection{GCD, Bezout, extended Euclidean}
 
-% TODO
+\begin{remark}
+Throughout, we write $a \mid b$ to mean ``$a$ divides $b$'', i.e.\ $\exists q \in \mathbb{Z} : aq = b$. For $M \in \mathbb{Z}^+$, we define $\mathbb{Z}_M := \{1, 2, \ldots, M-1\}$. A key elementary rule used throughout: if $a \equiv a' \pmod{M}$ and $b \equiv b' \pmod{M}$, then $ab \equiv a'b' \pmod{M}$.
+\end{remark}
+
+\subsubsection*{Greatest Common Divisor and Coprimality}
+
+\begin{definition}
+Let $a, b$ be integers, not both zero. The \textbf{greatest common divisor} $\gcd(a,b)$ is the largest integer $d$ such that $d \mid a$ and $d \mid b$.
+\end{definition}
+
+\begin{definition}
+Two integers $a$ and $b$ are \textbf{coprime} (or \emph{relatively prime}) if $\gcd(a,b) = 1$.
+\end{definition}
+
+\begin{example}
+The divisors of 15 are $\{1,3,5,15\}$ and the divisors of 28 are $\{1,2,4,7,14,28\}$. Their only common divisor is 1, so $\gcd(15,28)=1$ and they are coprime. By contrast, $\gcd(15,25)=5$, so 15 and 25 are not coprime.
+\end{example}
+
+\subsubsection*{Bézout's Identity}
+
+\begin{theorem}[Bézout's Identity]
+Let $a$ and $b$ be integers, not both zero. There exist integers $x$ and $y$ (called \textbf{Bézout's coefficients}) such that
+\[
+ax + by = \gcd(a,b).
+\]
+\end{theorem}
+
+\begin{example}
+Since $\gcd(15,28)=1$, there exist $x,y \in \mathbb{Z}$ with $15x + 28y = 1$. One solution is $x=15,\, y=-8$. Note that solutions are not unique: for any $k \in \mathbb{Z}$, replacing $x$ by $x + k\cdot 28$ and $y$ by $y - k \cdot 15$ gives another solution.
+\end{example}
+
+\begin{remark}
+The equation $ax + by = c$ has integer solutions if and only if $\gcd(a,b) \mid c$. If $d = \gcd(a,b) \nmid c$, then $d$ divides the left-hand side but not the right, giving a contradiction.
+\end{remark}
+
+\subsubsection*{Extended Euclidean Algorithm}
+
+The \textbf{Extended Euclidean Algorithm} (EEA) simultaneously computes $\gcd(a,b)$ and Bézout's coefficients by tracking three sequences $(r_i), (s_i), (t_i)$ satisfying $s_i a + t_i b = r_i$ at each step.
+
+\medskip
+\noindent\textbf{Algorithm} (Input: $a \geq b \geq 0$; Output: $g, x, y$ with $g = \gcd(a,b)$ and $ax+by=g$):
+\begin{enumerate}
+    \item Initialise: $r_0=a,\; r_1=b;\quad s_0=1,\; s_1=0;\quad t_0=0,\; t_1=1$.
+    \item While $r_i > 0$: compute quotient $q_i = \lfloor r_{i-1}/r_i \rfloor$, then
+    \[
+    r_{i+1} = r_{i-1} - q_i r_i, \quad s_{i+1} = s_{i-1} - q_i s_i, \quad t_{i+1} = t_{i-1} - q_i t_i.
+    \]
+    \item Return $r_{i-1},\, s_{i-1},\, t_{i-1}$.
+\end{enumerate}
+
+\begin{remark}
+The while loop executes $O(\log b)$ times. Accounting for integer multiplication, the total time complexity is $O(\log^2 a)$.
+\end{remark}
+
+\begin{example}
+Running EEA on $(a,b) = (28,15)$ yields $\gcd(28,15)=1$ with Bézout coefficients $x=7,\; y=-13$, i.e.\ $28 \cdot 7 + 15 \cdot (-13) = 196 - 195 = 1$. (Compare with $x=15, y=-8$ for the pair $(15,28)$ — coefficients depend on input order and are not unique.)
+\end{example}
+
+\subsubsection*{Linear Diophantine Equations}
+
+\begin{definition}
+A \textbf{linear Diophantine equation} is an equation of the form $ax + by = c$ where $a, b, c \in \mathbb{Z}$ and integer solutions $(x, y)$ are sought.
+\end{definition}
+
+\begin{theorem}[Existence of Integer Solutions]
+The equation $ax + by = c$ has integer solutions if and only if $\gcd(a,b) \mid c$.
+\end{theorem}
+\begin{proof}
+Let $d = \gcd(a,b)$. Since $d \mid a$ and $d \mid b$, we have $d \mid (ax + by)$ for any integers $x, y$. So if $ax + by = c$, then $d \mid c$, which is necessary.
+
+Conversely, if $d \mid c$, write $c = d \cdot m$. By Bézout's Identity there exist $x_0, y_0$ with $ax_0 + by_0 = d$. Multiplying through by $m$ gives $a(mx_0) + b(my_0) = dm = c$, so $(x,y) = (mx_0, my_0)$ is a solution.
+\end{proof}
+
+\begin{remark}[General Solution]
+If $(x_0, y_0)$ is one particular solution to $ax + by = c$, then the complete set of integer solutions is:
+\[
+x = x_0 + \frac{b}{d}\,k, \qquad y = y_0 - \frac{a}{d}\,k, \qquad k \in \mathbb{Z},\quad d = \gcd(a,b).
+\]
+\end{remark}
+
+\begin{example}[EEA with back-substitution: $\gcd(101, 23)$]
+Euclidean algorithm:
+\[
+101 = 4(23) + 9,\quad 23 = 2(9) + 5,\quad 9 = 1(5) + 4,\quad 5 = 1(4) + 1,\quad 4 = 4(1).
+\]
+So $\gcd(101,23) = 1$. Back-substituting to express 1 as $101x + 23y$:
+\[
+1 = 5 - 1(4) = 5 - (9-5) = 2(5) - 9 = 2(23-2\cdot9) - 9 = 2(23) - 5(9) = 2(23) - 5(101 - 4\cdot23)
+\]
+\[
+= 22(23) - 5(101).
+\]
+Hence one Bézout pair is $(x, y) = (-5,\, 22)$, verifying $101(-5) + 23(22) = -505 + 506 = 1$.
+\end{example}
+
+\begin{example}[Solving $18x + 30y = 12$]
+Check: $\gcd(18, 30) = 6$ and $6 \mid 12$, so integer solutions exist.
+
+Divide through by 6: $3x + 5y = 2$. Try $y = 1$: $3x = -3$, so $x = -1$.
+
+One solution is $(x,y) = (-1,\, 1)$. Check: $18(-1) + 30(1) = -18 + 30 = 12$. \checkmark
+
+The general solution is $x = -1 + 5k$, $y = 1 - 3k$ for $k \in \mathbb{Z}$.
+\end{example}
+
+\begin{example}[$\gcd(84,30)$ via back-substitution]
+Euclidean algorithm: $84 = 2(30) + 24$,\; $30 = 1(24) + 6$,\; $24 = 4(6)$. So $\gcd(84,30)=6$.
+
+Since $\gcd(84,30) = 6 \neq 1$, they are \textbf{not coprime}.
+
+Back-substituting: $6 = 30 - 24 = 30 - (84 - 2\cdot30) = 3(30) - 84$, giving $(x,y) = (-1,\, 3)$. Check: $84(-1) + 30(3) = -84 + 90 = 6$. \checkmark
+\end{example}
 
 \subsection{Congruences and modular inverses}
 
-% TODO
+\subsubsection*{Residue Classes and Congruence}
+
+\begin{definition}
+For $M \in \mathbb{Z}^+$, integers $a$ and $b$ are \textbf{congruent modulo $M$}, written $a \equiv b \pmod{M}$, if $M \mid (a - b)$. The \textbf{residue class} of $a$ modulo $M$ is the set of all integers congruent to $a$:
+\[
+[a]_M = \{ a + kM : k \in \mathbb{Z} \}.
+\]
+The set of all residue classes modulo $M$ is denoted $\mathbb{Z}/M\mathbb{Z}$.
+\end{definition}
+
+\begin{theorem}[Congruence Multiplication]
+If $a \equiv a' \pmod{M}$ and $b \equiv b' \pmod{M}$, then $ab \equiv a'b' \pmod{M}$.
+\end{theorem}
+\begin{proof}
+Since $M \mid (a - a')$ and $M \mid (b - b')$, write $ab - a'b' = a(b - b') + b'(a - a')$. Then $M$ divides both terms on the right, hence $M \mid (ab - a'b')$, giving $ab \equiv a'b' \pmod{M}$.
+\end{proof}
+
+\begin{remark}
+This rule is what makes it valid to reduce intermediate results during power computations: at each step, replace any number by its remainder mod $M$ before multiplying again.
+\end{remark}
+
+\subsubsection*{The Multiplicative Group $\mathbb{Z}_M^*$}
+
+\begin{definition}
+Let $M$ be a positive integer. The \textbf{multiplicative group of integers modulo $M$} is
+\[
+\mathbb{Z}_M^* = \{ a \in \mathbb{Z}_M \mid \gcd(a, M) = 1 \},
+\]
+equipped with the binary operation of multiplication modulo $M$.
+\end{definition}
+
+\begin{lemma}
+$\mathbb{Z}_M^*$ is a commutative group under multiplication modulo $M$.
+\end{lemma}
+\begin{proof}[Proof sketch]
+\textit{Closure:} if $\gcd(a,M)=1$ and $\gcd(b,M)=1$ then $\gcd(ab,M)=1$.
+\textit{Associativity:} inherited from integer multiplication.
+\textit{Identity:} the element $1 \in \mathbb{Z}_M^*$ satisfies $\gcd(1,M)=1$.
+\textit{Inverses:} for any $a \in \mathbb{Z}_M^*$, since $\gcd(a,M)=1$, Bézout's identity gives $x,y$ with $ax + My = 1$. Reducing modulo $M$ yields $ax \equiv 1 \pmod{M}$, so $x \bmod M$ is the multiplicative inverse of $a$.
+\end{proof}
+
+\begin{example}
+For $M=15$: $\mathbb{Z}_{15}^* = \{1,2,4,7,8,11,13,14\}$. Since $2 \times 8 = 16 \equiv 1 \pmod{15}$, the elements 2 and 8 are mutual inverses in this group.
+\end{example}
+
+\begin{example}[$\mathbb{Z}_{10}^*$ and modular inverses]
+The elements of $\mathbb{Z}_{10}^*$ are those $a \in \{1,\ldots,9\}$ with $\gcd(a,10)=1$:
+\[
+\mathbb{Z}_{10}^* = \{1,\, 3,\, 7,\, 9\}.
+\]
+To find $3^{-1} \pmod{10}$: we need $3x \equiv 1 \pmod{10}$. Testing: $3 \times 7 = 21 \equiv 1 \pmod{10}$, so $3^{-1} \equiv 7$.
+
+\textit{Alternative via Euler:} $\varphi(10)=4$, so $3^{-1} \equiv 3^{\varphi(10)-1} = 3^3 = 27 \equiv 7 \pmod{10}$. Same answer.
+
+To find $7^{-1} \pmod{15}$: test $7 \times 13 = 91 = 90 + 1 \equiv 1 \pmod{15}$, so $7^{-1} \equiv 13$.
+\end{example}
+
+\subsubsection*{Euler's Totient Function}
+
+\begin{definition}
+For a positive integer $M$, \textbf{Euler's totient function} $\varphi(M)$ counts the integers in $\{1,\ldots,M\}$ that are coprime to $M$. Equivalently, $\varphi(M) = |\mathbb{Z}_M^*|$.
+\end{definition}
+
+\begin{theorem}
+If $M$ is prime, then $\varphi(M) = M - 1$.
+\end{theorem}
+\begin{proof}
+A prime $M$ has only divisors 1 and $M$, so every $k \in \mathbb{Z}_M$ satisfies $\gcd(k,M)=1$. Thus $\varphi(M) = |\mathbb{Z}_M| = M-1$.
+\end{proof}
+
+\begin{theorem}
+If $p$ and $q$ are distinct primes and $M = pq$, then $\varphi(M) = (p-1)(q-1)$.
+\end{theorem}
+\begin{proof}
+The integers in $\{1,\ldots,M\}$ that share a factor with $pq$ are exactly the multiples of $p$ and the multiples of $q$ (by primality). There are $q$ multiples of $p$ and $p$ multiples of $q$ in that range; $pq$ itself is counted twice. So the count of integers \emph{not} coprime to $pq$ is $p + q - 1$, giving
+\[
+\varphi(pq) = pq - (p+q-1) = (p-1)(q-1). \qedhere
+\]
+\end{proof}
+
+\begin{theorem}[General Totient Formula]
+For any $M \in \mathbb{Z}^+$ with prime factorisation $M = p_1^{k_1} p_2^{k_2} \cdots p_r^{k_r}$,
+\[
+\varphi(M) = M \prod_{p \mid M} \left(1 - \frac{1}{p}\right).
+\]
+\end{theorem}
+
+\begin{example}[Worked totient computations]
+\begin{itemize}
+    \item $\varphi(13) = 13 - 1 = 12$ \quad (13 is prime).
+    \item $\varphi(21) = \varphi(3 \cdot 7) = (3-1)(7-1) = 12$.
+    \item $\varphi(15) = \varphi(3 \cdot 5) = (3-1)(5-1) = 8$.
+    \item $\varphi(10) = \varphi(2 \cdot 5) = (2-1)(5-1) = 4$.
+\end{itemize}
+\end{example}
+
+\begin{remark}
+A useful identity: $\displaystyle\sum_{d \mid M} \varphi(d) = M$, provable by partitioning the fractions $\tfrac{1}{M}, \tfrac{2}{M}, \ldots, \tfrac{M}{M}$ by the denominator of their reduced form.
+\end{remark}
+
+\subsubsection*{Euler's Theorem}
+
+\begin{theorem}[Euler's Theorem]
+If $a, M \in \mathbb{Z}^+$ are coprime, then
+\[
+a^{\varphi(M)} \equiv 1 \pmod{M}.
+\]
+\end{theorem}
+\begin{proof}
+Let $\mathbb{Z}_M^* = \{x_1, \ldots, x_k\}$ with $k = \varphi(M)$. Since $a \in \mathbb{Z}_M^*$, multiplication by $a$ permutes the elements of the group (as $a$ is invertible). Therefore
+\[
+\prod_{i=1}^k x_i \;\equiv\; \prod_{i=1}^k (ax_i) \;=\; a^k \prod_{i=1}^k x_i \pmod{M}.
+\]
+Since each $x_i$ is coprime to $M$, their product $P = \prod x_i$ is also coprime to $M$ and thus invertible modulo $M$. Multiplying both sides by $P^{-1}$ gives $1 \equiv a^k = a^{\varphi(M)} \pmod{M}$.
+\end{proof}
+
+\begin{corollary}[Fermat's Little Theorem]
+If $p$ is prime and $\gcd(a,p)=1$, then $a^{p-1} \equiv 1 \pmod{p}$.
+\end{corollary}
+
+\begin{remark}[Multiplicative Inverse via Euler's Theorem]
+Since $a^{\varphi(M)} \equiv 1 \pmod{M}$, we can factor this as $a \cdot a^{\varphi(M)-1} \equiv 1$, so:
+\[
+a^{-1} \equiv a^{\varphi(M)-1} \pmod{M} \qquad \text{(whenever } \gcd(a,M)=1\text{)}.
+\]
+This gives a formula for the inverse using only the totient. For example, $2^{-1} \pmod{15}$: since $\varphi(15)=8$, we get $2^{-1} \equiv 2^7 = 128 \equiv 8 \pmod{15}$. Check: $2 \times 8 = 16 \equiv 1$. \checkmark
+
+\textbf{Warning:} If $\gcd(a,M) \neq 1$, then $a \notin \mathbb{Z}_M^*$, Euler's theorem does not apply, and $a$ has \emph{no} multiplicative inverse modulo $M$. For instance, $\gcd(3,15)=3 \neq 1$, so 3 has no inverse mod 15.
+\end{remark}
+
+\begin{example}[Euler's theorem verification: $a=2$, $M=15$]
+Check: $\gcd(2,15)=1$ and $\varphi(15)=8$. Then $2^8 = 256 = 15 \cdot 17 + 1$, so $2^8 \equiv 1 \pmod{15}$. \checkmark
+\end{example}
+
+\begin{example}[Large power: $3^{100} \pmod{10}$]
+Since $\gcd(3,10)=1$, Euler's theorem applies with $\varphi(10)=4$, giving $3^4 \equiv 1 \pmod{10}$.
+Write $100 = 4 \times 25$, so $3^{100} = (3^4)^{25} \equiv 1^{25} = 1 \pmod{10}$.
+
+The last digit of $3^{100}$ is \textbf{1}.
+\end{example}
 
 \subsection{RSA and applications to cryptography}
 
-% TODO
+\subsubsection*{Order of an Element}
+
+\begin{definition}
+Let $a \in \mathbb{Z}_M^*$. The \textbf{order} of $a$ modulo $M$, written $\mathrm{ord}_M(a)$, is the smallest positive integer $r$ such that
+\[
+a^r \equiv 1 \pmod{M}.
+\]
+\end{definition}
+
+\begin{remark}[Computing the order: repeated multiplication mod $M$]
+To compute $\mathrm{ord}_M(a)$, evaluate $a^1, a^2, a^3, \ldots \pmod{M}$ using the congruence rule: at each step, multiply the \emph{current reduced value} by $a$, then reduce modulo $M$. Stop at the first exponent giving 1.
+
+This is efficient because the congruence multiplication property lets you keep numbers small throughout.
+\end{remark}
+
+\begin{example}[Orders in $\mathbb{Z}_7^*$]
+$\mathbb{Z}_7^* = \{1,2,3,4,5,6\}$, with $\varphi(7)=6$. So all orders divide 6, and the only possible orders are $1, 2, 3, 6$.
+
+\medskip
+\noindent\textit{Order of 2:}
+$2^1\equiv2,\; 2^2\equiv4,\; 2^3=8\equiv1 \pmod{7}$.
+So $\mathrm{ord}_7(2) = 3$.
+
+\medskip
+\noindent\textit{Order of 3:}
+\[
+3^1\equiv3,\quad 3^2=9\equiv2,\quad 3^3\equiv3\cdot2=6,\quad 3^4\equiv3\cdot6=18\equiv4,\quad 3^5\equiv3\cdot4=12\equiv5,\quad 3^6\equiv3\cdot5=15\equiv1.
+\]
+So $\mathrm{ord}_7(3) = 6$. Since $|\mathbb{Z}_7^*|=6$, the element 3 is a \textbf{generator} (primitive root mod 7).
+
+\medskip
+\noindent\textit{Check order divides totient:} $\mathrm{ord}_7(2) = 3$ divides $\varphi(7) = 6$. \checkmark
+\end{example}
+
+\begin{lemma}[Order Divides Totient]
+For any $a \in \mathbb{Z}_M^*$, we have $\mathrm{ord}_M(a) \mid \varphi(M)$.
+\end{lemma}
+\begin{proof}
+Let $r = \mathrm{ord}_M(a)$. By Euler's Theorem, $a^{\varphi(M)} \equiv 1$. Write $\varphi(M) = qr + s$ with $0 \le s < r$. Then
+\[
+1 \equiv a^{\varphi(M)} = a^{qr+s} = (a^r)^q \cdot a^s \equiv 1^q \cdot a^s = a^s \pmod{M}.
+\]
+Since $r$ is the \emph{smallest} positive exponent giving 1, we need $s = 0$, so $r \mid \varphi(M)$.
+\end{proof}
+
+\begin{corollary}
+For a prime $p$, $\mathrm{ord}_p(a)$ divides $p-1$ for every $a \in \mathbb{Z}_p^*$.
+\end{corollary}
+
+\subsubsection*{Cyclic Groups and Generators}
+
+\begin{definition}
+A commutative group $(G, \cdot)$ is \textbf{cyclic} if there exists $g \in G$ (a \textbf{generator}, written $G = \langle g \rangle$) such that every element of $G$ is a power of $g$. In $\mathbb{Z}_M^*$, a generator is called a \textbf{primitive root modulo $M$}.
+\end{definition}
+
+\begin{example}
+In $\mathbb{Z}_5^* = \{1,2,3,4\}$, the powers of 2 are:
+\[
+2^1 \equiv 2,\quad 2^2 \equiv 4,\quad 2^3 \equiv 3,\quad 2^4 \equiv 1 \pmod{5}.
+\]
+Since these cover all elements, 2 is a generator and $\mathbb{Z}_5^* = \langle 2 \rangle$ is cyclic.
+\end{example}
+
+\begin{remark}[Possible orders and generators in $\mathbb{Z}_p^*$]
+For prime $p$:
+\begin{itemize}
+    \item $|\mathbb{Z}_p^*| = \varphi(p) = p-1$.
+    \item Every element order divides $p-1$ (Order Divides Totient).
+    \item Therefore the \textbf{only possible orders} are the positive divisors of $p-1$.
+    \item A \textbf{generator} must produce all $p-1$ elements, so it must have order exactly $p-1$.
+\end{itemize}
+\end{remark}
+
+\begin{example}[All orders in $\mathbb{Z}_{11}^*$]
+$p=11$, $\varphi(11)=10$, possible orders $= \{1, 2, 5, 10\}$ (divisors of 10).
+
+\medskip
+\begin{center}
+\begin{tabular}{c|l|c}
+Element $a$ & Powers mod 11 (until 1) & $\mathrm{ord}_{11}(a)$ \\
+\hline
+1 & $1$ & 1 \\
+10 & $10,\;1$ & 2 \\
+3 & $3,9,5,4,1$ & 5 \\
+4 & $4,5,9,3,1$ & 5 \\
+5 & $5,3,4,9,1$ & 5 \\
+9 & $9,4,3,5,1$ & 5 \\
+2 & $2,4,8,5,10,9,7,3,6,1$ & 10 \\
+6 & $6,3,7,9,10,5,8,4,2,1$ & 10 \\
+7 & $7,5,2,3,10,4,6,9,8,1$ & 10 \\
+8 & $8,9,6,4,10,3,2,7,5,1$ & 10 \\
+\end{tabular}
+\end{center}
+
+\medskip
+Elements with order 10 (= $p-1$) are the generators: $\{2, 6, 7, 8\}$. Since 2 produces all 10 elements, $\mathbb{Z}_{11}^* = \langle 2 \rangle$ and 2 is a primitive root mod 11.
+\end{example}
+
+\begin{theorem}[Existence of Primitive Roots]
+For any prime $p$, the group $\mathbb{Z}_p^*$ is cyclic; i.e.\ there exists a primitive root modulo $p$.
+\end{theorem}
+\begin{proof}
+For each divisor $d$ of $p-1$, let $N_p(d)$ denote the number of elements in $\mathbb{Z}_p^*$ of order exactly $d$.
+
+\textit{Step 1.} We show $N_p(d) \in \{0, \varphi(d)\}$. Suppose $N_p(d) > 0$, so some $a \in \mathbb{Z}_p^*$ has order $d$. The elements $1, a, a^2, \ldots, a^{d-1}$ are $d$ distinct roots of $x^d - 1 \equiv 0 \pmod p$. Since a degree-$d$ polynomial over a prime field has at most $d$ roots, these are \emph{all} the roots. An element $a^k$ has order $d/\gcd(k,d)$; it has order exactly $d$ iff $\gcd(k,d)=1$. There are $\varphi(d)$ such $k$, so $N_p(d) = \varphi(d)$.
+
+\textit{Step 2.} Every element of $\mathbb{Z}_p^*$ has some order dividing $p-1$ (by the corollary above), and orders partition the $p-1$ elements:
+\[
+\sum_{d \mid p-1} N_p(d) = p-1.
+\]
+
+\textit{Step 3.} From step 1, $N_p(d) \le \varphi(d)$ for all $d$. Combined with the identity $\sum_{d \mid p-1} \varphi(d) = p-1$ (see the remark in the previous subsection), both sides of $\sum N_p(d) \le \sum \varphi(d)$ equal $p-1$. Therefore $N_p(d) = \varphi(d)$ for every divisor $d$.
+
+In particular, $N_p(p-1) = \varphi(p-1) \ge 1$, so at least one element has order $p-1$ and generates $\mathbb{Z}_p^*$.
+\end{proof}
+
+\begin{remark}[Relevance to Shor's Algorithm]
+The order-finding problem — given $a$ and $M$, find $\mathrm{ord}_M(a)$ — is computationally hard classically but can be solved efficiently on a quantum computer. Shor's algorithm reduces integer factorisation to order-finding in $\mathbb{Z}_N^*$: if $r = \mathrm{ord}_N(a)$ is even and $a^{r/2} \not\equiv -1 \pmod{N}$, then $\gcd(a^{r/2} \pm 1, N)$ yields a non-trivial factor of $N$, breaking RSA.
+\end{remark}
+
+\subsection{Counting Reduced Proper Fractions}
+
+\begin{definition}
+A fraction $n/d$ is a \textbf{reduced proper fraction} if $1 \le n < d$ and $\gcd(n,d)=1$.
+\end{definition}
+
+\begin{theorem}
+The total number of reduced proper fractions with denominator $d \le N$ is
+\[
+\sum_{d=2}^{N} \varphi(d).
+\]
+\end{theorem}
+\begin{proof}
+For a fixed denominator $d$, the valid numerators are $n \in \{1, 2, \ldots, d-1\}$ with $\gcd(n,d)=1$. By definition of Euler's totient, there are exactly $\varphi(d)$ such numerators. Summing over all $d$ gives the result.
+\end{proof}
+
+\begin{example}
+For $d \le 1{,}000{,}000$, the total number of reduced proper fractions is
+\[
+\sum_{d=2}^{10^6} \varphi(d) = 303{,}963{,}552{,}391.
+\]
+This is computed efficiently with a \textbf{totient sieve} (analogous to the Sieve of Eratosthenes): initialise an array $\varphi[1..N]$ with $\varphi[d]=d$, then for each prime $p$ found, multiply $\varphi[kp]$ by $(1 - 1/p)$ for all multiples $kp$.
+\end{example}
+
+\subsubsection*{Counting Reduced Fractions in an Interval}
+
+Sometimes we want reduced fractions $n/d$ in a strict interval $(a, b)$ rather than $(0,1)$.
+
+\begin{example}[Fractions strictly between $1/3$ and $1/2$]
+For each denominator $d$, the condition $1/3 < n/d < 1/2$ gives
+\[
+\frac{d}{3} < n < \frac{d}{2}
+\implies n \in \left\{\left\lfloor\tfrac{d}{3}\right\rfloor + 1,\; \ldots,\; \left\lfloor\tfrac{d-1}{2}\right\rfloor\right\}.
+\]
+Among those numerators, count only those with $\gcd(n,d)=1$. For $d \le 12{,}000$ the total is $7{,}295{,}372$.
+
+A direct double loop suffices:
+\begin{verbatim}
+long long ans = 0;
+for (int d = 2; d <= 12000; d++) {
+    int lo = d / 3 + 1, hi = (d - 1) / 2;
+    for (int n = lo; n <= hi; n++)
+        if (__gcd(n, d) == 1) ans++;
+}
+\end{verbatim}
+\end{example}
+
+\begin{remark}[Connection to Farey sequences]
+The set of all reduced fractions in $[0,1]$ with denominator $\le N$ is the Farey sequence $F_N$. Consecutive fractions $a/b$ and $c/d$ in $F_N$ satisfy the \emph{mediant property}: $|bc - ad| = 1$.
+\end{remark}

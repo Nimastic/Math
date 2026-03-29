@@ -31,6 +31,37 @@ where $\mathbf{y} \in \mathbb{R}^n$, $\mathbf{X} \in \mathbb{R}^{n \times p}$ is
 The closed-form solution $(\mathbf{X}^\top \mathbf{X})^{-1}$ exists \emph{only if} $\mathbf{X}^\top\mathbf{X}$ is invertible, which requires $\mathbf{X}$ to have full column rank. This is precisely the condition violated by perfect multicollinearity.
 \end{remark}
 
+\subsubsection*{Derivation of the OLS Estimator}
+
+The OLS estimator is found by minimising the \textbf{sum of squared residuals} (the loss function):
+\[
+\mathcal{L}(\boldsymbol{\beta}) = (\mathbf{y} - \mathbf{X}\boldsymbol{\beta})^\top(\mathbf{y} - \mathbf{X}\boldsymbol{\beta})
+\]
+
+\textbf{Step 1 — Expand the loss.} Using $(a-b)^\top(a-b) = a^\top a - 2b^\top a + b^\top b$:
+\[
+\mathcal{L}(\boldsymbol{\beta}) = \mathbf{y}^\top\mathbf{y} - 2\boldsymbol{\beta}^\top\mathbf{X}^\top\mathbf{y} + \boldsymbol{\beta}^\top\mathbf{X}^\top\mathbf{X}\boldsymbol{\beta}
+\]
+
+\textbf{Step 2 — Differentiate and set to zero.} Taking the gradient with respect to $\boldsymbol{\beta}$:
+\[
+\frac{\partial \mathcal{L}}{\partial \boldsymbol{\beta}} = -2\mathbf{X}^\top\mathbf{y} + 2\mathbf{X}^\top\mathbf{X}\boldsymbol{\beta} = \mathbf{0}
+\]
+
+\textbf{Step 3 — Normal equations.} Rearranging gives:
+\[
+\mathbf{X}^\top\mathbf{X}\,\boldsymbol{\beta} = \mathbf{X}^\top\mathbf{y}
+\]
+
+\textbf{Step 4 — Solve.} Provided $\mathbf{X}^\top\mathbf{X}$ is invertible, multiply both sides on the \emph{left} by $(\mathbf{X}^\top\mathbf{X})^{-1}$:
+\[
+\hat{\boldsymbol{\beta}}_{\mathrm{OLS}} = (\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\mathbf{y}
+\]
+
+\begin{remark}
+Note on order: writing $\mathbf{X}^\top\mathbf{y}\,(\mathbf{X}^\top\mathbf{X})^{-1}$ is \textbf{wrong} — matrix multiplication is not commutative. The inverse must appear on the left.
+\end{remark}
+
 \subsubsection*{The No Perfect Multicollinearity Assumption}
 
 \begin{definition}
@@ -68,4 +99,52 @@ The \textbf{Variance Inflation Factor} (VIF) measures the severity of imperfect 
 \mathrm{VIF}_j = \frac{1}{1 - R_j^2}
 \]
 where $R_j^2$ is the $R^2$ from regressing $X_j$ on all other predictors. A rule of thumb: $\mathrm{VIF}_j > 10$ signals problematic multicollinearity.
+\end{remark}
+
+\subsubsection*{Heteroscedasticity}
+
+\begin{definition}
+The OLS error term $\varepsilon_i$ is \textbf{homoscedastic} if its conditional variance is constant across all observations:
+\[
+\mathrm{Var}(\varepsilon_i \mid X_i) = \sigma^2 \quad \forall\, i
+\]
+It is \textbf{heteroscedastic} if this variance instead depends on $X_i$:
+\[
+\mathrm{Var}(\varepsilon_i \mid X_i) = \sigma_i^2 \quad \text{(varies with } i\text{)}
+\]
+\end{definition}
+
+\textbf{Variance structure.} Common parametric forms for $\sigma_i^2$ include:
+\[
+\sigma_i^2 = \sigma^2 \cdot X_i, \qquad \sigma_i^2 = \sigma^2 \cdot X_i^2, \qquad \sigma_i^2 = \exp(\alpha + \beta X_i)
+\]
+The subscript $i$ is the essential signal: each observation carries its own variance rather than a single pooled value.
+
+\textbf{Visual signature.} A residual-vs-fitted plot showing a \emph{funnel} (spread growing with fitted values) is the classic indicator of heteroscedasticity. A reverse funnel is equally diagnostic.
+
+\begin{remark}[Consequences for OLS]
+Under heteroscedasticity:
+\begin{itemize}
+    \item \textbf{Coefficients remain unbiased} — $\hat{\boldsymbol{\beta}}_{\mathrm{OLS}}$ still converges to the true $\boldsymbol{\beta}$ in expectation.
+    \item \textbf{Gauss--Markov fails} — OLS is no longer the Best Linear Unbiased Estimator (BLUE); more efficient estimators (e.g.\ WLS) exist.
+    \item \textbf{Standard errors are biased} — standard errors computed under homoscedasticity are typically \emph{underestimated}, inflating $t$-statistics.
+    \item \textbf{Inference breaks down} — because standard errors feed into $t$-tests, $F$-tests, and confidence intervals, all classical hypothesis tests become unreliable and may produce spurious rejections of $H_0$.
+\end{itemize}
+\end{remark}
+
+\textbf{Detection tests.}
+\begin{itemize}
+    \item \textbf{Visual:} Plot residuals vs.\ fitted values; look for funnel or fan shapes.
+    \item \textbf{Breusch--Pagan test:} Regress squared residuals $\hat{\varepsilon}_i^2$ on the regressors. The LM test statistic follows $\chi^2(k)$ under $H_0$ (homoscedasticity).
+    \item \textbf{White test:} Like Breusch--Pagan but also includes squares and cross-products of regressors, making it more robust to functional-form misspecification.
+    \item \textbf{Goldfeld--Quandt test:} Split the sample into two groups; compare their residual variances via an $F$-test.
+\end{itemize}
+
+\begin{remark}[Remedies]
+\begin{itemize}
+    \item \textbf{Heteroscedasticity-consistent (HC) standard errors} (robust SEs): correct standard error estimates without assuming constant variance. Common variants are HC0 (White 1980), HC1 (degrees-of-freedom corrected), and HC3 (recommended for small samples).
+    \item \textbf{Weighted Least Squares (WLS):} down-weights high-variance observations. Efficient when the variance structure $\sigma_i^2$ is known or estimable.
+    \item \textbf{Generalised Least Squares (GLS):} full generalisation of WLS for an arbitrary variance--covariance structure.
+    \item \textbf{Variance-stabilising transformations:} apply $\ln(Y)$ or a power transformation to the dependent variable to stabilise the spread of residuals.
+\end{itemize}
 \end{remark}

@@ -6,7 +6,48 @@
 
 \subsection{Propositional and predicate logic}
 
-% TODO
+\subsubsection*{Logical Connectives and XOR}
+
+\begin{definition}
+The standard propositional connectives are $\neg$ (NOT), $\land$ (AND), $\lor$ (OR), $\Rightarrow$ (implication), and $\Leftrightarrow$ (biconditional). The \textbf{exclusive or} (XOR) of propositions $p$ and $q$, written $p \oplus q$, is true exactly when $p$ and $q$ have different truth values:
+\[
+p \oplus q \;=\; (p \lor q) \land \neg(p \land q).
+\]
+\end{definition}
+
+\begin{remark}[XOR truth table]
+\begin{center}
+\begin{tabular}{c|c|c}
+$p$ & $q$ & $p \oplus q$ \\
+\hline
+0 & 0 & 0 \\
+0 & 1 & 1 \\
+1 & 0 & 1 \\
+1 & 1 & 0 \\
+\end{tabular}
+\end{center}
+XOR outputs 1 exactly when its inputs differ. Equivalently, $p \oplus q \equiv p + q \pmod{2}$: it is binary addition without carry.
+\end{remark}
+
+\begin{example}[Bitwise XOR]
+XOR extends bitwise to binary strings of equal length, applying the operation bit by bit:
+\[
+101 \oplus 110 = 011
+\]
+Check: $1\oplus1=0$, $0\oplus1=1$, $1\oplus0=1$.
+
+In quantum computing, expressions like $y \leftarrow x \oplus s$ mean ``flip the bits of $x$ wherever $s$ has a 1.'' For instance, $101 \oplus 110 = 011$.
+\end{example}
+
+\begin{remark}[Key properties of $\oplus$]
+\begin{itemize}
+    \item \textbf{Self-inverse:} $x \oplus x = 0$ for any bit string $x$.
+    \item \textbf{Identity:} $x \oplus 0 = x$.
+    \item \textbf{Commutativity:} $x \oplus y = y \oplus x$.
+    \item \textbf{Associativity:} $(x \oplus y) \oplus z = x \oplus (y \oplus z)$.
+\end{itemize}
+Self-inverse is especially useful: if $y = x \oplus s$, then $y \oplus s = x$ (XOR with the same value recovers the original).
+\end{remark}
 
 \subsection{Direct, contrapositive, contradiction}
 

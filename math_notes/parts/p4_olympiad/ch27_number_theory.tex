@@ -8,6 +8,41 @@
 
 % TODO
 
+\subsubsection*{Calendar Arithmetic: Tracking Weekdays with Modular Arithmetic}
+
+A practical application of $\pmod{7}$ arithmetic is computing the day of the week for any date.
+
+\begin{remark}[Day-of-week shifts]
+The day of the 1st of month $m$ shifts forward by the number of days in the previous month, taken $\pmod{7}$:
+\begin{center}
+\begin{tabular}{ll}
+31-day month & $31 \equiv 3 \pmod{7}$ \\
+30-day month & $30 \equiv 2 \pmod{7}$ \\
+28-day February & $28 \equiv 0 \pmod{7}$ \\
+29-day February (leap) & $29 \equiv 1 \pmod{7}$
+\end{tabular}
+\end{center}
+So a standard year shifts the weekday forward by $365 \equiv 1 \pmod 7$, and a leap year by $366 \equiv 2 \pmod 7$.
+\end{remark}
+
+\begin{remark}[Leap year rule]
+A year $y$ is a leap year iff: $4 \mid y$, \emph{except} century years require $400 \mid y$. Thus 1900 is \emph{not} a leap year, but 2000 \emph{is}.
+\end{remark}
+
+\begin{example}[Sundays on the 1st, 1901--2000]
+Given: 1 Jan 1900 was a Monday. Since 1900 is not a leap year, $365 \equiv 1 \pmod 7$, so 1 Jan 1901 was a Tuesday.
+
+Starting from Tuesday, iterate through each month from Jan 1901 to Dec 2000, shifting the weekday by the appropriate amount $\pmod 7$ at each step, and count how many 1st-of-month dates land on Sunday (weekday $= 0$ if we label Mon $= 1$, \ldots, Sun $= 0$).
+
+Over the 1200 months in $[1901, 2000]$ there are 25 leap years: $1904, 1908, \ldots, 1996, 2000$.
+
+Carrying through the arithmetic gives: \textbf{171 Sundays}.
+\end{example}
+
+\begin{remark}[Encoding days as integers]
+Label days $0, 1, \ldots, 6$ (e.g.\ Mon $= 0$, \ldots, Sun $= 6$). Each month transition adds the previous month's length $\pmod 7$. A programmatic solution loops over all 1200 months and increments a running counter.
+\end{remark}
+
 \subsection{Euler's theorem and CRT}
 
 % TODO
