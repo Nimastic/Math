@@ -142,6 +142,31 @@ The $\chi^2$ distribution is an approximation; it becomes accurate as sample siz
 For an application of the goodness-of-fit test to real-world fraud detection, see the Benford's Law subsection below, where the $\chi^2$ statistic is used to detect suspiciously uniform leading-digit distributions in financial data.
 \end{remark}
 
+\subsubsection*{The $F$-Test}
+
+\begin{definition}[$F$-test]
+An \textbf{$F$-test} is used to test joint hypotheses about multiple parameters simultaneously. Under the null, the test statistic follows an $F(q, n-k)$ distribution where $q$ is the number of restrictions and $n-k$ is the residual degrees of freedom.
+\end{definition}
+
+\begin{remark}[Why we need $F$ instead of repeated $t$-tests]
+Testing $H_0\colon \beta_1 = 0$ \emph{and} $\beta_2 = 0$ with two separate $t$-tests overstates confidence: each test has a false-positive probability, and running two inflates the overall Type I error rate. The $F$-test tests both restrictions simultaneously and controls the error rate correctly.
+\end{remark}
+
+\begin{theorem}[Large-sample $F$-statistic for $q$ restrictions]
+In large samples, when $q$ restrictions $H_0\colon R\beta = r$ are tested jointly, the $F$-statistic follows
+\[
+F \sim F(q, \infty).
+\]
+This is because each restricted $t$-statistic is approximately $N(0,1)$ under $H_0$, so their squares are $\chi^2(1)$ and their sum is $\chi^2(q)$:
+\[
+F = \frac{\chi^2(q)}{q} \sim F(q,\infty).
+\]
+\end{theorem}
+
+\begin{remark}[Connection to the distributions in ch.\ 62]
+$F(q,\infty)$ is the limit of $F(q, d_2)$ as $d_2 \to \infty$, at which point the denominator stabilises to 1 and $F = \chi^2(q)/q$. For regression in finite samples, the denominator uses the residual $\chi^2(n-k)$ in place of the infinite-df limit.
+\end{remark}
+
 \subsection{Benford's Law and Fraud Detection}
 
 \begin{definition}

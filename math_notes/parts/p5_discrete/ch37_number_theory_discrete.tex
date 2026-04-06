@@ -221,6 +221,36 @@ For any $M \in \mathbb{Z}^+$ with prime factorisation $M = p_1^{k_1} p_2^{k_2} \
 A useful identity: $\displaystyle\sum_{d \mid M} \varphi(d) = M$, provable by partitioning the fractions $\tfrac{1}{M}, \tfrac{2}{M}, \ldots, \tfrac{M}{M}$ by the denominator of their reduced form.
 \end{remark}
 
+\subsubsection*{Summatory Totient}
+
+\begin{definition}[Summatory totient]
+$\displaystyle\Phi(n) = \sum_{k=1}^{n} \varphi(k)$.
+\end{definition}
+
+\begin{remark}[Combinatorial meaning]
+$\Phi(n)$ counts the total number of reduced proper fractions with denominator at most $n$, since $\varphi(k)$ counts valid numerators for denominator $k$. (See also the counting section below.)
+\end{remark}
+
+\begin{theorem}[Recursive formula for $\Phi(n)$]
+\[
+\Phi(n) = \frac{n(n+1)}{2} - \sum_{\ell=2}^{n} \Phi\!\left(\left\lfloor \tfrac{n}{\ell} \right\rfloor\right).
+\]
+\end{theorem}
+\begin{proof}
+Start from the identity $\sum_{d \mid k} \varphi(d) = k$. Sum over $k = 1, \ldots, n$:
+\[
+\sum_{k=1}^n k = \sum_{k=1}^n \sum_{d \mid k} \varphi(d) = \sum_{d=1}^n \varphi(d) \cdot \left\lfloor \tfrac{n}{d} \right\rfloor.
+\]
+Isolate the $d=1$ term ($\varphi(1)=1$) and rearrange:
+\[
+\Phi(n) = \frac{n(n+1)}{2} - \sum_{\ell=2}^{n} \left\lfloor \tfrac{n}{\ell} \right\rfloor \varphi(\ell) \quad \Longrightarrow \quad \text{(after re-indexing)} \quad \Phi(n) = \frac{n(n+1)}{2} - \sum_{\ell=2}^{n} \Phi\!\left(\left\lfloor \tfrac{n}{\ell} \right\rfloor\right).
+\]
+\end{proof}
+
+\begin{remark}[Floor-grouping trick for fast evaluation]
+For a fixed $n$, many consecutive values of $\ell$ share the same $\lfloor n/\ell \rfloor$. Specifically, for each distinct quotient $v = \lfloor n/\ell \rfloor$, the range of $\ell$ achieving it is $[\lfloor n/(v+1) \rfloor + 1,\; \lfloor n/v \rfloor]$. Iterating over blocks of equal quotients reduces the sum to $O(\sqrt{n})$ distinct terms. Combined with memoisation of $\Phi(\lfloor n/\ell \rfloor)$, this gives an $O(n^{2/3})$ algorithm.
+\end{remark}
+
 \subsubsection*{Euler's Theorem}
 
 \begin{theorem}[Euler's Theorem]
@@ -433,4 +463,99 @@ for (int d = 2; d <= 12000; d++) {
 
 \begin{remark}[Connection to Farey sequences]
 The set of all reduced fractions in $[0,1]$ with denominator $\le N$ is the Farey sequence $F_N$. Consecutive fractions $a/b$ and $c/d$ in $F_N$ satisfy the \emph{mediant property}: $|bc - ad| = 1$.
+\end{remark}
+
+\subsection{2-Adic Valuation and the Lowbit Function}
+
+\begin{definition}[2-adic valuation]
+For a positive integer $n$, the \textbf{2-adic valuation} $v_2(n)$ is the exponent of the highest power of 2 dividing $n$:
+\[
+v_2(n) = \max\{k \in \mathbb{Z}_{\ge 0} : 2^k \mid n\}.
+\]
+\end{definition}
+
+\begin{definition}[Lowbit]
+The \textbf{lowbit} of $n$ is the value of the lowest set bit in the binary representation of $n$:
+\[
+\operatorname{lowbit}(n) = 2^{v_2(n)} = n \mathbin{\&} (-n).
+\]
+\end{definition}
+
+\begin{example}
+\begin{center}
+\begin{tabular}{cccc}
+$n$ & Binary & $v_2(n)$ & $\operatorname{lowbit}(n)$ \\
+\hline
+6 & $110_2$ & 1 & 2 \\
+12 & $1100_2$ & 2 & 4 \\
+8 & $1000_2$ & 3 & 8 \\
+7 & $0111_2$ & 0 & 1 \\
+\end{tabular}
+\end{center}
+When $n = 2^k$ is a power of 2, $\operatorname{lowbit}(n) = n$ itself and $v_2(n) = k$.
+\end{example}
+
+\begin{remark}[Bit-trick derivation]
+In two's complement, $-n$ flips all bits of $n$ and adds 1. The lowest set bit of $n$ is the first 1 from the right; all bits below it are 0 in $n$ and 1 in $\sim n$. Adding 1 to $\sim n$ carries through those low-order 1s until it reaches the position of the original lowest set bit, which becomes 1 again. Hence $n \mathbin{\&} (-n)$ isolates exactly that lowest set bit.
+\end{remark}
+
+\subsubsection*{Sum of Lowbit Values}
+
+\begin{theorem}[Recurrence for $T(N) = \sum_{m=1}^{N} \operatorname{lowbit}(m)$]
+\[
+T(2k) = k + 2\,T(k), \qquad T(2k+1) = T(2k) + 1.
+\]
+\end{theorem}
+\begin{proof}
+Among $\{1, 2, \ldots, 2k\}$: the $k$ odd numbers each have $\operatorname{lowbit} = 1$, contributing $k$. The $k$ even numbers satisfy $\operatorname{lowbit}(2j) = 2\,\operatorname{lowbit}(j)$, contributing $2T(k)$. So $T(2k) = k + 2T(k)$. Adding the odd number $2k+1$ contributes 1, giving $T(2k+1) = T(2k)+1$.
+\end{proof}
+
+\begin{remark}[Closed form at powers of 2]
+By induction, $T(2^m) = (m+2)\cdot 2^{m-1}$.
+\end{remark}
+
+\subsection{Application: Hexagonal Grid Visibility}
+
+A striking application of Euler's totient is counting hidden lattice points in a hexagonal grid.
+
+\textbf{Setup.} Consider a hexagonal arrangement of points centred at the origin, where the $n$th order has points at distance up to $n$ in a regular hexagonal pattern. A point $P$ is \textbf{hidden} from the centre if another lattice point lies strictly between the origin and $P$ on the same ray.
+
+\textbf{Reduction to one slice.} By 6-fold symmetry, count one $60^\circ$ slice and multiply by 6. In the slice, points form rows: row $k$ contains $k$ points.
+
+\subsubsection*{Primitive Directions and Visible Points}
+
+Label the $k$ points in row $k$ by the fractions
+\[
+\frac{0}{k},\; \frac{1}{k},\; \frac{2}{k},\; \ldots,\; \frac{k-1}{k}.
+\]
+This fraction encodes the direction (slope) of the ray from the origin to that point.
+
+\begin{theorem}[Visible $\Leftrightarrow$ primitive direction]
+The point labelled $a/k$ is \textbf{visible} from the origin if and only if $\gcd(a,k) = 1$.
+\end{theorem}
+\begin{proof}
+If $\gcd(a,k) = d > 1$, then $a/k = (a/d)/(k/d)$, so the closer point in row $k/d$ lies on the same ray and blocks the view. Conversely, if $\gcd(a,k) = 1$, no closer point shares the same direction.
+\end{proof}
+
+\begin{corollary}
+In row $k$: visible points $= \varphi(k)$; hidden points $= k - \varphi(k)$.
+\end{corollary}
+
+\subsubsection*{Formula for the Number of Hidden Points}
+
+\begin{theorem}
+The number of hidden points $H(n)$ in a hexagonal grid of order $n$ is
+\[
+H(n) = 6\sum_{k=1}^{n}\bigl(k - \varphi(k)\bigr) = 3n(n+1) - 6\,\Phi(n),
+\]
+where $\Phi(n) = \sum_{k=1}^{n}\varphi(k)$ is the summatory totient.
+\end{theorem}
+
+\begin{example}[$n = 5$]
+$\varphi(1)=1,\;\varphi(2)=1,\;\varphi(3)=2,\;\varphi(4)=2,\;\varphi(5)=4$.
+Hidden per row in one slice: $0, 1, 1, 2, 1$. Sum $= 5$. Multiply by 6: $H(5) = 30$.
+\end{example}
+
+\begin{remark}[Computational note for large $n$]
+For $n = 10^8$, computing $H(n)$ requires $\Phi(n)$ efficiently. The summatory totient recursion (see above) with floor-grouping gives $\Phi(n)$ in $O(n^{2/3})$ time, making $H(10^8)$ tractable. The answer is $H(10^8) = 11762187201804552$.
 \end{remark}

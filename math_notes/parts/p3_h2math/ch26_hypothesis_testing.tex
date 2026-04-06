@@ -148,3 +148,68 @@ Under heteroscedasticity:
     \item \textbf{Variance-stabilising transformations:} apply $\ln(Y)$ or a power transformation to the dependent variable to stabilise the spread of residuals.
 \end{itemize}
 \end{remark}
+
+\subsubsection*{Joint Hypothesis Testing: the $F$-Statistic in Regression}
+
+A \textbf{$t$-test} checks one coefficient at a time. An \textbf{$F$-test} checks several coefficients simultaneously. To test $H_0\colon \beta_1 = 0$ \emph{and} $\beta_2 = 0$ together, combine both $t$-statistics into a single score.
+
+\begin{theorem}[Joint $F$-statistic, two restrictions]
+Let $t_1 = \hat\beta_1 / \widehat{\mathrm{SE}}_1$ and $t_2 = \hat\beta_2 / \widehat{\mathrm{SE}}_2$ be the individual $t$-statistics, and let $\hat\rho \equiv \hat\rho_{t_1,t_2}$ be the estimated correlation between them. Then the joint $F$-statistic is
+\[
+F = \frac{1}{2} \cdot \frac{t_1^2 + t_2^2 - 2\hat\rho\, t_1 t_2}{1 - \hat\rho^2}.
+\]
+Under $H_0$, in large samples, $F \sim F(2,\infty)$.
+\end{theorem}
+
+\textbf{Anatomy of the formula.}
+\begin{itemize}
+    \item $t_1^2 + t_2^2$: raw evidence. Squaring ensures large negative and large positive $t$-values both count.
+    \item $-2\hat\rho\, t_1 t_2$: removes double-counting. If $t_1$ and $t_2$ move together ($\hat\rho > 0$), they share information; this term subtracts the overlap.
+    \item $1 - \hat\rho^2$: rescaling. Even after removing the overlap in the numerator, correlated variables do not spread like independent ones — this denominator adjusts for the ``compressed'' joint geometry.
+    \item $\frac{1}{2}$: divides by the number of restrictions (2), making the result comparable to $F(2,\cdot)$.
+\end{itemize}
+
+\begin{remark}[Special case: uncorrelated $t$-statistics]
+When $\hat\rho = 0$ (regressors uncorrelated), the formula collapses to
+\[
+F = \tfrac{1}{2}(t_1^2 + t_2^2).
+\]
+This is simply the average of the squared $t$-statistics. In large samples, $t_1, t_2 \approx N(0,1)$ independently under $H_0$, so $t_1^2 + t_2^2 \sim \chi^2(2)$ and $F \sim F(2,\infty)$.
+\end{remark}
+
+\begin{remark}[General: $q$ restrictions]
+Testing $q$ restrictions simultaneously gives $F \sim F(q,\infty)$ in large samples. The $q$ in the numerator degrees of freedom is precisely the number of restrictions being tested.
+\end{remark}
+
+\subsubsection*{Mahalanobis Distance and the $F$-Formula}
+
+The joint $F$-statistic is a scaled \textbf{Mahalanobis distance} — the correct notion of distance when two variables are correlated.
+
+Under $H_0$, $(t_1, t_2)^\top$ has covariance matrix
+\[
+\Sigma = \begin{pmatrix} 1 & \rho \\ \rho & 1 \end{pmatrix},
+\]
+where each $t$-stat has variance 1 (both are approximately $N(0,1)$) and they share correlation $\rho$ because $\hat\beta_1, \hat\beta_2$ come from the same regression data.
+
+Inverting a $2\times 2$ matrix $\begin{pmatrix}a&b\\c&d\end{pmatrix}$ via $\frac{1}{ad-bc}\begin{pmatrix}d&-b\\-c&a\end{pmatrix}$, with $\det(\Sigma) = 1 - \rho^2$:
+\[
+\Sigma^{-1} = \frac{1}{1-\rho^2}\begin{pmatrix} 1 & -\rho \\ -\rho & 1 \end{pmatrix}.
+\]
+
+The Mahalanobis squared distance from the origin is $\mathbf{t}^\top \Sigma^{-1} \mathbf{t}$:
+\[
+\mathbf{t}^\top \Sigma^{-1} \mathbf{t}
+= \frac{1}{1-\rho^2}(t_1, t_2)\begin{pmatrix}1 & -\rho \\ -\rho & 1\end{pmatrix}\begin{pmatrix}t_1\\t_2\end{pmatrix}
+= \frac{t_1^2 + t_2^2 - 2\rho t_1 t_2}{1-\rho^2}.
+\]
+The $-2\rho t_1 t_2$ arises because the off-diagonal $-\rho$ entries appear in both rows of the matrix (symmetry), contributing $-\rho t_1 t_2$ twice. The $1-\rho^2$ is the determinant of $\Sigma$, falling out of the matrix inversion.
+
+Dividing by 2 (the number of restrictions) gives the $F$-statistic $F = \frac{1}{2}\mathbf{t}^\top \hat\Sigma^{-1}\mathbf{t}$.
+
+\begin{remark}[Geometric intuition: circles vs.\ ellipses]
+When $\rho = 0$, the equal-distance contours of $(t_1,t_2)$ from the origin are circles. When $\rho \neq 0$, the cloud of possible values stretches along the diagonal — equal-distance contours become ellipses. Points along $t_1 \approx t_2$ are not genuinely independent evidence; they lie in a correlated direction. The Mahalanobis formula measures distance in this elliptical geometry, not the naive circular one. As $|\rho| \to 1$, the ellipse degenerates and the test becomes unstable ($1-\rho^2 \to 0$).
+\end{remark}
+
+\begin{remark}[Why $t$-statistics can be correlated in regression]
+The $t$-stats $t_j = \hat\beta_j / \widehat{\mathrm{SE}}_j$ share the same sample data. If regressors $X_1$ and $X_2$ are correlated with each other, the coefficient estimates $\hat\beta_1$ and $\hat\beta_2$ are correlated too — they trade off against each other to fit the same outcomes. This is why $\hat\rho \neq 0$ is the norm, not the exception.
+\end{remark}

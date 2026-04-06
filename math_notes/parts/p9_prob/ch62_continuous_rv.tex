@@ -12,6 +12,110 @@
 
 % TODO
 
+\subsection{Chi-square, $t$, and $F$ distributions}
+
+Everything begins with the standard normal $Z \sim N(0,1)$.
+All three distributions below are built from this single building block.
+
+\subsubsection*{Chi-Square Distribution}
+
+\begin{definition}[Chi-square distribution]
+If $Z_1, Z_2, \ldots, Z_k \stackrel{\text{iid}}{\sim} N(0,1)$, then
+\[
+X = Z_1^2 + Z_2^2 + \cdots + Z_k^2 \sim \chi^2(k).
+\]
+The parameter $k$ is the \textbf{degrees of freedom} and equals the number of squared normals added.
+\end{definition}
+
+\begin{remark}[Why squaring matters]
+A standard normal $Z$ is symmetric around 0 and can be negative. After squaring: (1) all values become $\geq 0$, and (2) large deviations in either direction collapse to large positive values (e.g.\ $(-3)^2 = 9$). This is why $\chi^2$ is always non-negative and right-skewed.
+\end{remark}
+
+\begin{remark}[Shape by degrees of freedom]
+\begin{itemize}
+    \item $k=1$: Spikes near zero then drops sharply — ``backwards J''. Most of the time $Z \approx 0$, so $Z^2 \approx 0$.
+    \item $k=2,3,\ldots$: A hump develops. The mode is at $k-2$ (for $k \geq 2$); the mean is $k$.
+    \item Large $k$: By the CLT, summing many independent squared normals approaches normality. $\chi^2(k)$ looks increasingly bell-shaped, but remains shifted right (never below 0).
+\end{itemize}
+\end{remark}
+
+\begin{remark}[Additive property]
+If $U \sim \chi^2(d_1)$ and $V \sim \chi^2(d_2)$ independently, then $U + V \sim \chi^2(d_1 + d_2)$. Degrees of freedom add.
+\end{remark}
+
+\begin{remark}[Sample variance connection]
+For a sample of size $n$ from $N(\mu,\sigma^2)$:
+\[
+\frac{(n-1)S^2}{\sigma^2} \sim \chi^2(n-1).
+\]
+\end{remark}
+
+\subsubsection*{$t$-Distribution}
+
+\begin{definition}[$t$-distribution]
+If $Z \sim N(0,1)$ and $V \sim \chi^2(\nu)$ are independent, then
+\[
+T = \frac{Z}{\sqrt{V/\nu}} \sim t(\nu).
+\]
+\end{definition}
+
+\begin{remark}[Intuition]
+The $t$-distribution arises when estimating a population mean without knowing $\sigma^2$. The sample variance $S^2$ is random, so the denominator $S/\sqrt{n}$ introduces extra uncertainty. The $\chi^2(\nu)$ in the denominator captures this randomness from variance estimation.
+\end{remark}
+
+\begin{remark}[Shape]
+The $t$-distribution is symmetric (like the normal) but has heavier tails: occasionally the denominator $\sqrt{V/\nu}$ is small, making $T$ large. As $\nu \to \infty$, $V/\nu \to 1$ and $T \to N(0,1)$. In practice, $t \approx N(0,1)$ for large samples.
+\end{remark}
+
+\begin{theorem}[$t$ squared is $F$]
+If $T \sim t(\nu)$, then $T^2 \sim F(1,\nu)$.
+\end{theorem}
+
+\subsubsection*{$F$-Distribution}
+
+\begin{definition}[$F$-distribution]
+If $U \sim \chi^2(d_1)$ and $V \sim \chi^2(d_2)$ are independent, then
+\[
+F = \frac{U/d_1}{V/d_2} \sim F(d_1, d_2).
+\]
+\end{definition}
+
+\begin{remark}[Intuition]
+The $F$-distribution compares two sources of variation. Dividing by degrees of freedom makes the pieces comparable regardless of how many squared normals went into each. It is used in ANOVA, comparing variances, and testing joint significance of regression coefficients.
+\end{remark}
+
+\begin{remark}[Shape]
+$F > 0$ always (ratio of positive quantities). Right-skewed for the same reason as $\chi^2$. When $d_2 \to \infty$, the denominator stabilises to 1, so $F(d_1, \infty) \equiv \chi^2(d_1)/d_1$.
+\end{remark}
+
+\subsubsection*{The Full Family Tree}
+
+\begin{center}
+\begin{tabular}{lll}
+$N(0,1) \xrightarrow{\text{square}}$ & $\chi^2(1) \xrightarrow{\text{add }k}$ & $\chi^2(k)$ \\[4pt]
+$\dfrac{N(0,1)}{\sqrt{\chi^2(\nu)/\nu}}$ & $= t(\nu)$ & $\xrightarrow{\text{square}} F(1,\nu)$ \\[8pt]
+$\dfrac{\chi^2(d_1)/d_1}{\chi^2(d_2)/d_2}$ & $= F(d_1, d_2)$ &
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{llll}
+\textbf{Distribution} & \textbf{Built from} & \textbf{Shape} & \textbf{Used for} \\
+\hline
+$\chi^2(k)$ & Sum of $k$ squared normals & Right-skewed, $\geq 0$ & Variance, goodness of fit \\
+$t(\nu)$ & Normal $\div$ scaled $\chi^2$ & Symmetric, heavy tails & Testing one coefficient \\
+$F(d_1,d_2)$ & Ratio of two scaled $\chi^2$ & Right-skewed, $\geq 0$ & Testing multiple coefficients jointly \\
+\end{tabular}
+\end{center}
+
+\begin{remark}[One-line intuitions]
+\begin{itemize}
+    \item $\chi^2$: \emph{how much total squared deviation is there?}
+    \item $t$: \emph{is this one thing far from zero, accounting for noisy variance?}
+    \item $F$: \emph{are these things jointly far from zero, as a ratio of variations?}
+\end{itemize}
+\end{remark}
+
 \subsection{Transformations and change of variables}
 
 % TODO
